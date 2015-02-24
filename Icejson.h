@@ -109,12 +109,13 @@ struct Node_t
       Node_t *prev;
       Node_t *parent;
 
+      string vstr;
+         
       union
       {
          int vint;
          float vreal;
          char vchar;
-         string vstr;
          Node_t *varr;
          Node_t *vobj;
       };
