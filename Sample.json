@@ -1,0 +1,9 @@
+{
+   "#int" : 93,
+   "$char" : 'c',
+   "%string" : "Hello World!",
+   "%string" : "First line\nsecond line",
+   "%string" : "Unicode \u0030 \u0039 \u0061",
+   "@array" : [10, ["One", [21.12, 31.13], "Two"], 12],
+   "!float" : 75
+}
