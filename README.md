@@ -2,11 +2,11 @@
 
 A small JSON parser with minimum lines of code contained in only two files
 
-Why another JSON parser?
-There are lot of JSON parsers already which I could have used but I wanted to learn "Recursive Descent Parsers" so choose to implement one for JSON
+Why another JSON parser?<br/>
+There are lot of JSON parsers already which I could have used but I wanted to learn <b>"Recursive Descent Parsers"</b> so choose to implement one for JSON
 
-Why the name Icejson?
-There is no real reason for choosing this name. Just wanted to have a fancy name
+Why the name Icejson?<br/>
+Just wanted to have a fancy name. There is no real reason for choosing this name
 
-Description about Icejson : 
-Even though the parser was created for learning pupropse It is full JSON compatible
+Description about Icejson :<br/>
+Even though the parser was created for learning pupropse it is full JSON compatible
