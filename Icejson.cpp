@@ -1,12 +1,14 @@
 
 /**
  *
- * Author   : D.Dinesh - 1800
- *            Software Developer
- *            dinesh.dd@plintron.com
+ * Author   : D.Dinesh
+ * Website  : www.techybook.com
+ * Email Id : dinesh@techybook.com
  *
  * Created  : 19 Feb 2015 - Thu
  * Updated  : 20 Feb 2015 - Fri
+ *
+ * Licence : Refer the license file
  *
  **/
 
