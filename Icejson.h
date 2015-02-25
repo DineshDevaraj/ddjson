@@ -6,7 +6,7 @@
  * Email Id : dinesh@techybook.com
  *
  * Created  : 24 Feb 2015 - Tue
- * Updated  : 24 Feb 2015 - Tue
+ * Updated  : 25 Feb 2015 - Wed
  *
  * Licence : Refer the license file
  *
@@ -16,101 +16,95 @@
 
 #include <iostream>
 
-using namespace std;
-
-#define T template typename<Type>
-
-/* forward declarations */
-struct Doc_t;
-struct Node_t;
-struct Error_t;
-struct Iterator_t;
-
-/* different value types supported in JSON */
-struct Valuetype
+namespace Icejson
 {
-   enum Values
+   using namespace std;
+
+   /* forward declarations */
+   struct Doc_t;
+   struct Node_t;
+   struct Error_t;
+   struct Parser_t;
+   struct Iterator_t;
+
+   /* different value types supported in JSON */
+   struct Valuetype
    {
-      Int,
-      Float,
-      Char,
-      String,
-      Array,
-      Object,
-      Invalid
+      enum Values
+      {
+         Int      = 'I',
+         Float    = 'F',
+         Char     = 'C',
+         String   = 'S',
+         Array    = 'A',
+         Object   = 'O',
+         Invalid  = 'X'
+      };
    };
-};
 
-typedef Valuetype::Values Valuetype_t;
+   typedef Valuetype::Values Valuetype_t;
 
-struct Error_t
-{
-   int line;
-   int colum;
-   int offset;
-   string desc;
-};
+   struct Error_t
+   {
+      int line;
+      int colum;
+      int offset;
+      string desc;
+   };
 
-struct Doc_t
-{
-   Doc_t();
+   struct Doc_t
+   {
+      Doc_t();
+      Doc_t(Node_t *node);
 
-   Error_t error;
+      Error_t error;
 
-   Node_t & get_root();
+      Node_t & get_root();
 
-   Node_t & parse_file(FILE *);
-   Node_t & parse_file(const char *);
-   Node_t & parse_string(const char *);
+      Node_t & parse_file(FILE *);
+      Node_t & parse_file(const char *);
+      Node_t & parse_string(const char *);
 
-   private :
-      Node_t *root;
-};
+      private : Node_t *proot;
+   };
 
-struct Node_t
-{
-   Node_t();
+   struct Node_t
+   {
+      Node_t();
 
-   Doc_t & get_doc();
-   Node_t & get_root();
+      string name;
 
-   Valuetype_t get_value_type();
+      Doc_t & get_doc();
+      Node_t & get_root();
 
-   T int value<int>();
+      Valuetype_t get_value_type();
 
-   T char value<char>();
+      template <typename type> type value();
 
-   T float value<float>();
+      Node_t & next();
+      Node_t & prev();
 
-   T string value<string>();
+      bool valid();
 
-   T Node_t & value<Node_t>();
+      operator bool ();
 
-   Node_t & next();
-   Node_t & prev();
+      bool operator != (const Iterator_t &rhs);
+      bool operator == (const Iterator_t &rhs);
 
-   bool valid();
+      Iterator_t begin();
+      Iterator_t end();
 
-   bool operator ! (const Iterator_t &obj);
-   bool operator != (const Iterator_t &rhs);
-   bool operator == (const Iterator_t &rhs);
-   bool operator not (const Iterator_t &obj);
-   bool operator bool (const Iterator_t &obj);
+      private :
 
-   Iterator_t begin();
-   Iterator_t end();
+      Doc_t *pdoc;
 
-   private :
-
-      Doc_t *doc;
-
-      Node_t *root;
-      Node_t *next;
-      Node_t *prev;
-      Node_t *parent;
+      Node_t *proot;
+      Node_t *pnext;
+      Node_t *pprev;
+      Node_t *pparent;
 
       string vstr;
-         
+
       union
       {
          int vint;
@@ -121,26 +115,30 @@ struct Node_t
       };
 
       Valuetype_t vtype;
-};
 
-struct Iterator_t
-{
-   Iterator_t();
-   Iterator_t(Node_t *node);
+      friend struct Parser_t;
+      friend struct Iterator_t;
+   };
 
-   Node_t & operator * ();
+   struct Iterator_t
+   {
+      Iterator_t();
+      Iterator_t(Node_t *node);
 
-   Iterator_t & operator ++();      /* prefix */
-   Iterator_t & operator --();      /* prefix */
+      Node_t & operator * ();
 
-   Iterator_t & operator ++(int);   /* postfix */
-   Iterator_t & operator --(int);   /* postfix */
+      Iterator_t & operator ++();      /* prefix */
+      Iterator_t & operator --();      /* prefix */
 
-   bool operator ! (const Iterator_t &obj);
-   bool operator != (const Iterator_t &rhs);
-   bool operator == (const Iterator_t &rhs);
-   bool operator not (const Iterator_t &obj);
-   bool operator bool (const Iterator_t &obj);
+      Iterator_t operator ++(int);   /* postfix */
+      Iterator_t operator --(int);   /* postfix */
 
-   private : Node_t *cur;
-};
+      operator bool ();
+      bool operator not ();
+
+      bool operator != (const Iterator_t &rhs);
+      bool operator == (const Iterator_t &rhs);
+
+      private : Node_t *pcur;
+   };
+}

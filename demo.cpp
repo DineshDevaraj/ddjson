@@ -1,0 +1,66 @@
+
+/**
+ *
+ * Author   : D.Dinesh
+ * Website  : www.techybook.com
+ * Email Id : dinesh@techybook.com
+ *
+ * Created  : 25 Feb 2015 - Wed
+ * Updated  : 25 Feb 2015 - Wed
+ *
+ * Licence : Refer the license file
+ *
+ **/
+
+#include <stdio.h>
+#include <iostream>
+
+#include "Icejson.h"
+
+using namespace std;
+using namespace Icejson;
+
+void PrintJson(Node_t &node)
+{  
+   Iterator_t itr = node.begin();
+   for( ; itr != node.end(); itr++)
+   {
+      printf("%s - %c - ", (*itr).name.data(), (*itr).get_value_type());
+      switch((*itr).get_value_type())
+      {
+         case Valuetype::Int    : printf("%d\n", (*itr).value<int>());
+                                  break;
+         case Valuetype::Float  : printf("%f\n", (*itr).value<float>());
+                                  break;                              
+         case Valuetype::Char   : printf("%c\n", (*itr).value<char>());
+                                  break;                              
+         case Valuetype::String : printf("%s\n", (*itr).value<string>().data());
+                                  break;                              
+         case Valuetype::Object : PrintJson((*itr).value<Icejson::Node_t &>());
+                                  break;
+         default : printf("\n");
+      }
+   }
+   return;
+}
+
+int main()
+{
+   Doc_t oJson;
+
+   char json_str[1024] = {};
+   FILE *fh = fopen("Sample.json", "r");
+   fread(json_str, sizeof(char), sizeof json_str, fh);
+
+   Node_t &root = oJson.parse_string(json_str);
+   if(!root)
+   {
+      printf("%s before line %d colum %d and offset %d\n",
+            oJson.error.desc.data(), oJson.error.line, 
+            oJson.error.colum, oJson.error.offset);
+   }
+
+   PrintJson(root);
+
+   return 0;
+}
