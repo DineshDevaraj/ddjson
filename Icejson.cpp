@@ -323,12 +323,23 @@ namespace Icejson
 
    bool Parser_t::ParseArray(Lexer_t &lex)
    {
+      Parser_t *pp = NULL;
+      vobj = pp = new Parser_t;
+
       while(LEX_ARRAY_CLOSE != lex.cur())
       {
-         char val[32] = {};
-         vtype = Valuetype::Array;
-         ParseNode(lex, LEX_ARRAY_CLOSE);
+         pp->pparent = this;
+         pp->ParseNode(lex, LEX_ARRAY_CLOSE);
+         Parser_t *swp = new Parser_t;
+         swp->pprev = pp;
+         pp->pnext = swp;
+         pp = swp;
       }
+
+      if(NULL == pp->pprev) vobj = NULL;
+      else pp->pprev->pnext = NULL;
+      delete pp;
+
       return OK;
    }
 

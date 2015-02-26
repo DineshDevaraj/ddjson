@@ -4,7 +4,7 @@
    "%string" : "Hello World!",
    "%string" : "First line\nsecond line",
    "%string" : "Unicode \u0030 \u0039 \u0061",
-   "@array" : [10, ["One", [21.12, {}, 31.13], "Two"], 12],
+   "@array" : [10, ["One", [21.12, { "location" : "middle" }, 31.13], "Two"], 12],
    "!float" : 75.25,
    "nested" : { "username" : "Dinesh" },
    "lorem"  : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis tristique elementum sem, malesuada laoreet elit commodo ac. Nam diam magna, fermentum a vulputate eget, molestie ac ligula. Vestibulum varius maximus lacus. Mauris tempor, ex sit amet laoreet molestie, eros sem lobortis eros, ut dapibus mauris ante id massa. Quisque aliquet sapien non sapien venenatis tempor. Nunc nec eros nulla. Morbi tempus enim sit amet dictum semper. Vivamus ac quam sed tellus varius egestas. Donec mattis, nulla non pulvinar ullamcorper, lorem urna luctus turpis, ac sagittis ante ipsum in velit. Nulla scelerisque felis dui, a consectetur nisl consequat vel. Morbi commodo lacus quis justo tempor varius. Donec felis est, semper ac nisi quis, dapibus facilisis ex In dictum efficitur mauris, molestie bibendum augue accumsan vel. Morbi blandit neque et porttitor pharetra. Curabitur eget pretium odio. Suspendisse lobortis, metus dictum pharetra vestibulum, ligula nunc feugiat odio, nec sagittis quam tellus in diam. Maecenas augue lacus, mattis vel velit at, sollicitudin vestibulum eros. Quisque efficitur nec mauris sit amet ultricies. Curabitur rutrum elementum leo quis porta. Ut id tincidunt enim. In porta, lacus vitae posuere volutpat, sapien felis volutpat urna, semper efficitur magna nisi tristique massa"
