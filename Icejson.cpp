@@ -6,7 +6,7 @@
  * Email Id : dinesh@techybook.com
  *
  * Created  : 19 Feb 2015 - Thu
- * Updated  : 25 Feb 2015 - Wed
+ * Updated  : 26 Feb 2015 - Thu
  *
  * Licence : Refer the license file
  *
@@ -83,9 +83,9 @@ struct Lexer_t
    Symbol next();
    Symbol get_sym();
 
-   Symbol get_num(char *val);
-   Symbol get_str(char *val);
-   Symbol get_char(char &val);
+   Symbol get_str(std::string &val);
+   Symbol get_num(const char * &val);
+   Symbol get_char(const char * &val);
 };
 
 Lexer_t::Lexer_t()
@@ -138,41 +138,49 @@ Symbol Lexer_t::get_sym()
    return cur_sym;
 }
 
-Symbol Lexer_t::get_num(char *val)
+Symbol Lexer_t::get_num(const char * &val)
 {
+   val = cur_pos;
    Symbol sym = LEX_INT;
 
    while(isdigit(*cur_pos)) 
-      *val++ = *cur_pos++;
+      cur_pos++;
 
    if('.' == *cur_pos && isdigit(cur_pos[1]))
    {
-      *val++ = *cur_pos++;
-      cur_sym = LEX_FLOAT;
-      while(isdigit(*cur_pos)) 
-         *val++ = *cur_pos++;
+      cur_pos++;
       sym = LEX_FLOAT;
+      while(isdigit(*cur_pos)) 
+         cur_pos++;
    }
 
-   val[0] = 0;
    get_sym();
 
    return sym;
 }
 
-Symbol Lexer_t::get_char(char &val)
+Symbol Lexer_t::get_char(const char * &val)
 {
    cur_pos++; /* ship char symbol */
-   val = *cur_pos++;
+   val = cur_pos++;
    return get_sym();
 }
 
-Symbol Lexer_t::get_str(char *val)
+Symbol Lexer_t::get_str(std::string &val)
 {
-   cur_pos++; /* skip string symbol */
+   cur_pos++;           /* skip string symbol */
+   val.clear();
+   char arr[65] = {};
 
-   for( ; '"' != *cur_pos; val++, cur_pos++)
+   for(int I = 0; '"' != *cur_pos; I++, cur_pos++)
    {
+      if(I >= 64)
+      {
+         I = 0;
+         val += arr;
+         memset(arr, 0, sizeof arr);
+      }
+
       if('\n' == *cur_pos)
       {
          line++;
@@ -182,27 +190,27 @@ Symbol Lexer_t::get_str(char *val)
       {
          switch(*++cur_pos)
          {
-            case '"'  : *val = '"' ; break;
-            case '\\' : *val = '\\'; break;
-            case '/'  : *val = '/' ; break;
-            case 'b'  : *val = '\b'; break;
-            case 'f'  : *val = '\f'; break;
-            case 'n'  : *val = '\n'; break;
-            case 'r'  : *val = '\r'; break;
-            case 't'  : *val = '\t'; break;
+            case '"'  : arr[I] = '"' ; break;
+            case '\\' : arr[I] = '\\'; break;
+            case '/'  : arr[I] = '/' ; break;
+            case 'b'  : arr[I] = '\b'; break;
+            case 'f'  : arr[I] = '\f'; break;
+            case 'n'  : arr[I] = '\n'; break;
+            case 'r'  : arr[I] = '\r'; break;
+            case 't'  : arr[I] = '\t'; break;
 
-            case 'u'  : *val = 0;
-                        for(int I = 0; I < 4 && cur_pos++; I++)
+            case 'u'  : arr[I] = 0;
+                        for(int J = 0; J < 4 && cur_pos++; J++)
                         {
-                           *val <<= 4;
+                           arr[I] <<= 4;
                            char ch = *cur_pos;
                            if('0' <= ch and ch <= '9')
-                              *val |= (ch - '0');
+                              arr[I] |= (ch - '0');
                            else if('a' <= ch and ch <= 'f')
-                              *val |= (ch - 'a' + 0xA);
+                              arr[I] |= (ch - 'a' + 0xA);
                            else if('A' <= ch and ch <= 'F')
-                              *val |= (ch - 'A' + 0xA);
-                           else trw_err("Invalid unicode value");
+                              arr[I] |= (ch - 'A' + 0xA);
+                           else trw_err("Inpid unicode pue");
                         }
                         break;
 
@@ -211,9 +219,11 @@ Symbol Lexer_t::get_str(char *val)
       }
       else
       {
-         *val = *cur_pos;
+         arr[I] = *cur_pos;
       }
    }
+   
+   val += arr;
 
    return get_sym();
 }
@@ -231,25 +241,27 @@ namespace Icejson
 
       Parser_t(Valuetype_t type) { vtype = type; }
 
-      Parser_t * AddChild();
       bool ParseArray(Lexer_t &lex);
       bool ParseObject(Lexer_t &lex);
-      bool ParseNode(Lexer_t &lex, Symbol node_close, char *val);
+      Parser_t * AddChild(Valuetype_t type);
+      bool ParseNode(Lexer_t &lex, Symbol node_close);
    };
 
-   Parser_t * Parser_t::AddChild()
+   Parser_t * Parser_t::AddChild(Valuetype_t type)
    {
       Parser_t *pp = new Parser_t;
       pp->pparent = this;
+      pp->vtype = type;
       vobj = pp;
       return pp;
    }
 
-   bool Parser_t::ParseNode(Lexer_t &lex, Symbol node_close, char *val)
+   bool Parser_t::ParseNode(Lexer_t &lex, Symbol node_close)
    {
       switch(lex.next())
       {
-         case LEX_INT         : if(LEX_INT == lex.get_num(val))
+         case LEX_INT         : const char *val;
+                                if(LEX_INT == lex.get_num(val))
                                 {
                                    vint = atoi(val);
                                    vtype = Valuetype::Int;
@@ -261,22 +273,40 @@ namespace Icejson
                                 }
                                 break;
 
-         case LEX_CHAR        : lex.get_char(*val);
+         case LEX_CHAR        : lex.get_char(val);
                                 if(LEX_CHAR != lex.cur())
+                                {
                                    trw_err("Unterminated char value");
-                                else { lex.next(); vtype = Valuetype::Char; break; }
+                                }
+                                else 
+                                { 
+                                   vchar = *val; 
+                                   vtype = Valuetype::Char; 
+                                   lex.next(); 
+                                   break; 
+                                }
 
-         case LEX_STRING      : lex.get_str(val);
+         case LEX_STRING      : lex.get_str(vstr);
                                 if(LEX_STRING != lex.cur())
+                                {
                                    trw_err("Unterminated string value");
-                                else { lex.next(); vtype = Valuetype::String; break; }
+                                }
+                                else 
+                                { 
+                                   lex.next(); 
+                                   vtype = Valuetype::String; 
+                                   break; 
+                                }
 
-         case LEX_ARRAY_OPEN  : AddChild()->ParseArray(lex);
+         case LEX_ARRAY_OPEN  : Valuetype_t type;
+                                type = Valuetype::Array;
+                                AddChild(type)->ParseArray(lex);
                                 vtype = Valuetype::Array;
                                 lex.next(); /* move past array close symbol */
                                 break;
 
-         case LEX_OBJECT_OPEN : AddChild()->ParseObject(lex);
+         case LEX_OBJECT_OPEN : type = Valuetype::Object;
+                                AddChild(type)->ParseObject(lex);
                                 vtype = Valuetype::Object;
                                 lex.next(); /* move past object close symbol */
                                 break;
@@ -297,8 +327,7 @@ namespace Icejson
       {
          char val[32] = {};
          vtype = Valuetype::Array;
-         ParseNode(lex, LEX_ARRAY_CLOSE, val);
-         printf("%s, ", val);
+         ParseNode(lex, LEX_ARRAY_CLOSE);
       }
       return OK;
    }
@@ -310,30 +339,22 @@ namespace Icejson
 
       while(LEX_OBJECT_CLOSE != lex.cur())
       {
-         char sval[32] = {};
-         char sname[32] = {};
-
+         /* the following line is to handle empty objects */
          if(LEX_OBJECT_CLOSE == lex.next())
             break;
 
          if(LEX_STRING != lex.cur())
             trw_err("Expected node name");
 
-         lex.get_str(sname);
+         lex.get_str(pp->name);
          if(LEX_STRING != lex.cur())
             trw_err("Invalid node name");
 
          if(LEX_NAME_SEPERATOR != lex.next())
             trw_err("Expected name seperator");
          
-         pp->name = sname;
          pp->pparent = this;
-
-         pp->ParseNode(lex, LEX_OBJECT_CLOSE, sval);
-
-         pp->vstr = sval;
-         
-         printf("%s : %s\n", pp->name.data(), sval);
+         pp->ParseNode(lex, LEX_OBJECT_CLOSE);
 
          Parser_t *swp = new Parser_t;
          swp->pprev = pp;
@@ -341,7 +362,8 @@ namespace Icejson
          pp = swp;
       }
 
-      pp->pprev->pnext = NULL;
+      if(NULL == pp->pprev) vobj = NULL;
+      else pp->pprev->pnext = NULL;
       delete pp;
 
       return OK;

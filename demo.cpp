@@ -21,21 +21,22 @@ using namespace std;
 using namespace Icejson;
 
 void PrintJson(Node_t &node)
-{  
+{
    Iterator_t itr = node.begin();
    for( ; itr != node.end(); itr++)
    {
-      printf("%s - %c - ", (*itr).name.data(), (*itr).get_value_type());
+      printf("%s : ", (*itr).name.data(), (*itr).get_value_type());
       switch((*itr).get_value_type())
       {
          case Valuetype::Int    : printf("%d\n", (*itr).value<int>());
                                   break;
          case Valuetype::Float  : printf("%f\n", (*itr).value<float>());
-                                  break;                              
+                                  break;
          case Valuetype::Char   : printf("%c\n", (*itr).value<char>());
-                                  break;                              
+                                  break;
          case Valuetype::String : printf("%s\n", (*itr).value<string>().data());
-                                  break;                              
+                                  break;
+         case Valuetype::Array  :
          case Valuetype::Object : PrintJson((*itr).value<Icejson::Node_t &>());
                                   break;
          default : printf("\n");
@@ -44,11 +45,12 @@ void PrintJson(Node_t &node)
    return;
 }
 
+char json_str[5000] = {};
+
 int main()
 {
    Doc_t oJson;
 
-   char json_str[1024] = {};
    FILE *fh = fopen("Sample.json", "r");
    fread(json_str, sizeof(char), sizeof json_str, fh);
 
