@@ -79,7 +79,6 @@ struct Lexer_t
 
    void load_string(const char *json_arg);
 
-   Symbol cur();
    Symbol next();
    Symbol get_sym();
 
@@ -98,14 +97,8 @@ Lexer_t::Lexer_t()
 
 void Lexer_t::load_string(const char *json_arg)
 {
-   line_bgn = json_str = 
-      cur_pos = json_arg;
+   line_bgn = json_str = cur_pos = json_arg;
    get_sym(); /* this will set cur_sym */
-}
-
-Symbol Lexer_t::cur()
-{
-   return cur_sym;
 }
 
 Symbol Lexer_t::next()
@@ -186,7 +179,8 @@ Symbol Lexer_t::get_str(std::string &val)
          line++;
          line_bgn = cur_pos + 1;
       }
-      else if('\\' == *cur_pos)
+      
+      if('\\' == *cur_pos)
       {
          switch(*++cur_pos)
          {
@@ -274,7 +268,7 @@ namespace Icejson
                                 break;
 
          case LEX_CHAR        : lex.get_char(val);
-                                if(LEX_CHAR != lex.cur())
+                                if(LEX_CHAR != lex.cur_sym)
                                 {
                                    trw_err("Unterminated char value");
                                 }
@@ -287,7 +281,7 @@ namespace Icejson
                                 }
 
          case LEX_STRING      : lex.get_str(vstr);
-                                if(LEX_STRING != lex.cur())
+                                if(LEX_STRING != lex.cur_sym)
                                 {
                                    trw_err("Unterminated string value");
                                 }
@@ -314,8 +308,8 @@ namespace Icejson
          default : trw_err("Expected number, char, string, array or object");
       }
 
-      if(LEX_VALUE_SEPERATOR != lex.cur() and 
-            node_close != lex.cur())
+      if(LEX_VALUE_SEPERATOR != lex.cur_sym and 
+            node_close != lex.cur_sym)
          trw_err("Expected value seperator");
 
       return OK;
@@ -326,7 +320,7 @@ namespace Icejson
       Parser_t *pp = NULL;
       vobj = pp = new Parser_t;
 
-      while(LEX_ARRAY_CLOSE != lex.cur())
+      while(LEX_ARRAY_CLOSE != lex.cur_sym)
       {
          pp->pparent = this;
          pp->ParseNode(lex, LEX_ARRAY_CLOSE);
@@ -348,17 +342,17 @@ namespace Icejson
       Parser_t *pp = NULL;
       vobj = pp = new Parser_t;
 
-      while(LEX_OBJECT_CLOSE != lex.cur())
+      while(LEX_OBJECT_CLOSE != lex.cur_sym)
       {
          /* the following line is to handle empty objects */
          if(LEX_OBJECT_CLOSE == lex.next())
             break;
 
-         if(LEX_STRING != lex.cur())
+         if(LEX_STRING != lex.cur_sym)
             trw_err("Expected node name");
 
          lex.get_str(pp->name);
-         if(LEX_STRING != lex.cur())
+         if(LEX_STRING != lex.cur_sym)
             trw_err("Invalid node name");
 
          if(LEX_NAME_SEPERATOR != lex.next())
@@ -397,7 +391,7 @@ namespace Icejson
       {
          lex.load_string(json_arg);
 
-         if(LEX_OBJECT_OPEN != lex.cur())
+         if(LEX_OBJECT_OPEN != lex.cur_sym)
             trw_err("Expected object at start");
 
          pp = new Parser_t(Valuetype::Object);
@@ -436,15 +430,6 @@ namespace Icejson
       vtype = Valuetype::Invalid;
    }
 
-   Node_t::operator bool ()
-   {
-      return this != &oInvalid;
-   }
-
-   bool Node_t::valid()
-   {
-      return this != &oInvalid;
-   }
 
    Iterator_t Node_t::begin()
    {
@@ -454,40 +439,16 @@ namespace Icejson
       return Iterator_t(NULL);
    }
 
-   Iterator_t Node_t::end()
-   {
-      return Iterator_t(NULL);
-   }
+   bool Node_t::valid()     { return this != &oInvalid; }
+   Node_t::operator bool () { return this != &oInvalid; }
+   Iterator_t Node_t::end() { return Iterator_t(NULL);  }
 
-   Valuetype_t Node_t::get_value_type()
-   {
-      return vtype;
-   }
-
-   template <> int Node_t::value()
-   {
-      return vint;
-   }
-
-   template <> float Node_t::value()
-   {
-      return vreal;
-   }
-
-   template <> char Node_t::value()
-   {
-      return vchar;
-   }
-
-   template <> string Node_t::value()
-   {
-      return vstr;
-   }
-
-   template <> Node_t & Node_t::value()
-   {
-      return *vobj;
-   }
+   Valuetype_t Node_t::get_value_type() { return vtype; }
+   template <> int Node_t::value()      { return vint;  }
+   template <> float Node_t::value()    { return vreal; }
+   template <> char Node_t::value()     { return vchar; }
+   template <> string Node_t::value()   { return vstr;  }
+   template <> Node_t & Node_t::value() { return *vobj; }
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
