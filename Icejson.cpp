@@ -6,7 +6,7 @@
  * Email Id : dinesh@techybook.com
  *
  * Created  : 19 Feb 2015 - Thu
- * Updated  : 26 Feb 2015 - Thu
+ * Updated  : 03 Mar 2015 - Mon
  *
  * Licence : Refer the license file
  *
@@ -104,8 +104,7 @@ void Lexer_t::load_string(const char *json_arg)
 Symbol Lexer_t::next()
 {
    cur_pos++;
-   get_sym();
-   return cur_sym;
+   return get_sym();
 }
 
 Symbol Lexer_t::get_sym()
@@ -252,7 +251,7 @@ namespace Icejson
 
    bool Parser_t::ParseNode(Lexer_t &lex, Symbol node_close)
    {
-      switch(lex.next())
+      switch(lex.cur_sym)
       {
          case LEX_INT         : const char *val;
                                 if(LEX_INT == lex.get_num(val))
@@ -318,21 +317,24 @@ namespace Icejson
    bool Parser_t::ParseArray(Lexer_t &lex)
    {
       Parser_t *pp = NULL;
+
+      /* handle empty array */
+      if(LEX_ARRAY_CLOSE == lex.next())
+         return OK;
+
       vobj = pp = new Parser_t;
+      pp->pparent = this;
+      pp->ParseNode(lex, LEX_ARRAY_CLOSE);
 
       while(LEX_ARRAY_CLOSE != lex.cur_sym)
       {
-         pp->pparent = this;
-         pp->ParseNode(lex, LEX_ARRAY_CLOSE);
+         lex.next();
          Parser_t *swp = new Parser_t;
          swp->pprev = pp;
-         pp->pnext = swp;
-         pp = swp;
+         pp->pnext = pp = swp;
+         pp->pparent = this;
+         pp->ParseNode(lex, LEX_ARRAY_CLOSE);
       }
-
-      if(NULL == pp->pprev) vobj = NULL;
-      else pp->pprev->pnext = NULL;
-      delete pp;
 
       return OK;
    }
@@ -344,7 +346,7 @@ namespace Icejson
 
       while(LEX_OBJECT_CLOSE != lex.cur_sym)
       {
-         /* the following line is to handle empty objects */
+         /* handle empty objects */
          if(LEX_OBJECT_CLOSE == lex.next())
             break;
 
@@ -358,6 +360,7 @@ namespace Icejson
          if(LEX_NAME_SEPERATOR != lex.next())
             trw_err("Expected name seperator");
          
+         lex.next();
          pp->pparent = this;
          pp->ParseNode(lex, LEX_OBJECT_CLOSE);
 
