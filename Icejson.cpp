@@ -49,8 +49,9 @@ struct Exception
 
 enum Symbol
 {
-   LEX_INT              = 0x01   ,
-   LEX_FLOAT                     ,
+   LEX_INT              = 'I'    ,
+   LEX_NEG              = '-'    ,
+   LEX_FLOAT            = '.'    ,
    LEX_CHAR             = '\''   ,
    LEX_STRING           = '"'    ,
    LEX_NULL             = 'N'    ,
@@ -116,6 +117,7 @@ Symbol Lexer_t::get_sym()
    char ch = *cur_pos;
    switch(ch)
    {
+      case LEX_NEG             :
       case LEX_CHAR            :
       case LEX_STRING          :
       case LEX_ARRAY_OPEN      :
@@ -152,6 +154,13 @@ Symbol Lexer_t::get_num(const char * &val)
 {
    val = cur_pos;
    Symbol sym = LEX_INT;
+
+   if('-' == *cur_pos)
+   {
+      cur_pos++;
+      if(not isdigit(*cur_pos))
+         trw_err("Expected digit");
+   }
 
    while(isdigit(*cur_pos)) 
       cur_pos++;
@@ -221,7 +230,7 @@ Symbol Lexer_t::get_str(std::string &val)
                               arr[I] |= (ch - 'a' + 0xA);
                            else if('A' <= ch and ch <= 'F')
                               arr[I] |= (ch - 'A' + 0xA);
-                           else trw_err("Inpid unicode pue");
+                           else trw_err("Invalid unicode value");
                         }
                         break;
 
@@ -271,6 +280,7 @@ namespace Icejson
    {
       switch(lex.cur_sym)
       {
+         case LEX_NEG         : 
          case LEX_INT         : const char *val;
                                 if(LEX_INT == lex.get_num(val))
                                 {
@@ -438,8 +448,8 @@ namespace Icejson
       {
          error.desc = exc.msg;
          error.line = lex.line;
-         error.colum = lex.cur_pos - lex.line_bgn;
-         error.offset = lex.cur_pos - lex.json_str;
+         error.colum = lex.cur_pos - lex.line_bgn + 1;
+         error.offset = lex.cur_pos - lex.json_str + 1;
       }
 
       return oInvalid;

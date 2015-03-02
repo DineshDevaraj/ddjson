@@ -67,9 +67,9 @@ int main()
       Node_t &root = oJson.parse_string(json_str);
       if(!root)
       {
-         printf("%s before line %d colum %d and offset %d\n",
-               oJson.error.desc.data(), oJson.error.line, 
-               oJson.error.colum, oJson.error.offset);
+         printf("%s at or before colum %d in line %d\n",
+               oJson.error.desc.data(), oJson.error.colum, 
+               oJson.error.line);
          break;
       }
 
