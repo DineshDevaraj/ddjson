@@ -1,0 +1,10 @@
+{
+   "#int" : 93,
+   "$char" : 'c',
+   "%string" : "Hello World!",
+   "%string" : "First\tline\nsecond\b line",
+   "%string" : "Unicode \u0030 \u0039 \u0061",
+   "@array" : [10, 11, 12],
+   "!float" : 75.25,
+   "nested" : { "username" : "Dinesh" }
+}

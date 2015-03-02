@@ -53,6 +53,9 @@ enum Symbol
    LEX_FLOAT                     ,
    LEX_CHAR             = '\''   ,
    LEX_STRING           = '"'    ,
+   LEX_NULL             = 'N'    ,
+   LEX_BOOL_TRUE        = 'T'    ,
+   LEX_BOOL_FALSE       = 'F'    ,
 
    LEX_ARRAY_OPEN       = '['    ,
    LEX_ARRAY_CLOSE      = ']'    ,
@@ -125,6 +128,21 @@ Symbol Lexer_t::get_sym()
 
       default  : if('0' <= ch and ch <= '9')
                     cur_sym = LEX_INT;
+                 else if(0 == strncmp(cur_pos, "true", 4))
+                 {
+                    cur_sym  = LEX_BOOL_TRUE;
+                    cur_pos += 3;
+                 }
+                 else if(0 == strncmp(cur_pos, "false", 5))
+                 {
+                    cur_sym  = LEX_BOOL_FALSE;
+                    cur_pos += 4;
+                 }
+                 else if(0 == strncmp(cur_pos, "null", 4))
+                 {
+                    cur_sym  = LEX_NULL;
+                    cur_pos += 3;
+                 }
                  else cur_sym = LEX_INVALID;
    }
    return cur_sym;
@@ -290,6 +308,20 @@ namespace Icejson
                                    vtype = Valuetype::String; 
                                    break; 
                                 }
+
+         case LEX_BOOL_TRUE   : vbool = true;
+                                vtype = Valuetype::Bool;
+                                lex.next();
+                                break;
+         
+         case LEX_BOOL_FALSE  : vbool = false;
+                                vtype = Valuetype::Bool;
+                                lex.next();
+                                break;
+
+         case LEX_NULL        : vtype = Valuetype::Null;
+                                lex.next();
+                                break;
 
          case LEX_ARRAY_OPEN  : Valuetype_t type;
                                 type = Valuetype::Array;

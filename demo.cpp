@@ -6,7 +6,7 @@
  * Email Id : dinesh@techybook.com
  *
  * Created  : 25 Feb 2015 - Wed
- * Updated  : 26 Feb 2015 - Thu
+ * Updated  : 03 Mar 2015 - Mon
  *
  * Licence : Refer the license file
  *
@@ -51,19 +51,31 @@ char json_str[5000] = {};
 int main()
 {
    Doc_t oJson;
+   char file[256] = {};
 
-   FILE *fh = fopen("Sample.json", "r");
-   fread(json_str, sizeof(char), sizeof json_str, fh);
-
-   Node_t &root = oJson.parse_string(json_str);
-   if(!root)
+   for(int I = 1; I < 20; I++)
    {
-      printf("%s before line %d colum %d and offset %d\n",
-            oJson.error.desc.data(), oJson.error.line, 
-            oJson.error.colum, oJson.error.offset);
-   }
+      sprintf(file, "Samples/Sample%d.json", I);
+      FILE *fh = fopen(file, "r");
+      if(NULL == fh)
+      {
+         printf("Unable to open file %s\n", file);
+         break;
+      }
+      fread(json_str, sizeof(char), sizeof json_str, fh);
 
-   PrintJson(root);
+      Node_t &root = oJson.parse_string(json_str);
+      if(!root)
+      {
+         printf("%s before line %d colum %d and offset %d\n",
+               oJson.error.desc.data(), oJson.error.line, 
+               oJson.error.colum, oJson.error.offset);
+         break;
+      }
+
+      PrintJson(root);
+      fclose(fh);
+   }
 
    return 0;
 }

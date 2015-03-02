@@ -36,6 +36,8 @@ namespace Icejson
          Float    = 'F',
          Char     = 'C',
          String   = 'S',
+         Bool     = 'B',
+         Null     = 'N',
          Array    = 'A',
          Object   = 'O',
          Invalid  = 'X'
@@ -110,6 +112,7 @@ namespace Icejson
          int vint;
          float vreal;
          char vchar;
+         bool vbool;
          Node_t *varr;
          Node_t *vobj;
       };
