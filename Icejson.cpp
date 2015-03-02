@@ -155,22 +155,29 @@ Symbol Lexer_t::get_num(const char * &val)
    val = cur_pos;
    Symbol sym = LEX_INT;
 
-   if('-' == *cur_pos)
-   {
-      cur_pos++;
-      if(not isdigit(*cur_pos))
+   if('-' == *cur_pos and !isdigit(*++cur_pos))
          trw_err("Expected digit");
-   }
 
    while(isdigit(*cur_pos)) 
       cur_pos++;
 
    if('.' == *cur_pos && isdigit(cur_pos[1]))
    {
-      cur_pos++;
       sym = LEX_FLOAT;
-      while(isdigit(*cur_pos)) 
-         cur_pos++;
+      while(isdigit(*++cur_pos)); 
+   }
+
+   if('e' == *cur_pos || 'E' == *cur_pos)
+   {
+      sym = LEX_FLOAT;
+      if(isdigit(*++cur_pos))
+         while(isdigit(*++cur_pos));
+      else if('+' == *cur_pos || '-' == *cur_pos)
+      {
+         if(not isdigit(*++cur_pos))
+            trw_err("Expected digit");
+         while(isdigit(*++cur_pos));
+      }
    }
 
    get_sym();

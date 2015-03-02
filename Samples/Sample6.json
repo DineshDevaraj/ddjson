@@ -1,13 +1,22 @@
 {
-   "#int" : 93,
-   "$char" : 'c',
-   "%string" : "Hello World!",
-   "%string" : "First\tline\nsecond\b line",
-   "%string" : "Unicode \u0030 \u0039 \u0061",
-   "@array" : [10, 11, 12],
-   "!float" : 0.25,
-   "!float" : 73.25,
-   "-negative" : -13,
-   "-ve float" : -0.7,
-   "nested" : { "username" : "Dinesh" }
+    "glossary": {
+        "title": "example glossary",
+      "GlossDiv": {
+            "title": "S",
+         "GlossList": {
+                "GlossEntry": {
+                    "ID": "SGML",
+               "SortAs": "SGML",
+               "GlossTerm": "Standard Generalized Markup Language",
+               "Acronym": "SGML",
+               "Abbrev": "ISO 8879:1986",
+               "GlossDef": {
+                        "para": "A meta-markup language, used to create markup languages such as DocBook.",
+                  "GlossSeeAlso": ["GML", "XML"]
+                    },
+               "GlossSee": "markup"
+                }
+            }
+        }
+    }
 }

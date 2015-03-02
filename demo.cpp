@@ -53,7 +53,7 @@ int main()
    Doc_t oJson;
    char file[256] = {};
 
-   for(int I = 1; I < 20; I++)
+   for(int I = 1; I < 2; I++)
    {
       sprintf(file, "Samples/Sample%d.json", I);
       FILE *fh = fopen(file, "r");
