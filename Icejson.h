@@ -6,7 +6,7 @@
  * Email Id : dinesh@techybook.com
  *
  * Created  : 24 Feb 2015 - Tue
- * Updated  : 25 Feb 2015 - Wed
+ * Updated  : 03 Mar 2015 - Tue
  *
  * Licence : Refer the license file
  *
@@ -61,7 +61,7 @@ namespace Icejson
 
       Error_t error;
 
-      Node_t & get_root();
+      Node_t & root();
 
       Node_t & parse_file(FILE *);
       Node_t & parse_file(const char *);
@@ -76,19 +76,23 @@ namespace Icejson
 
       string name;
 
-      Doc_t & get_doc();
-      Node_t & get_root();
+      Doc_t & doc();
+      Node_t & root();
 
-      Valuetype_t get_value_type();
+      Valuetype_t value_type();
 
       template <typename type> type value();
 
       Node_t & next();
       Node_t & prev();
+      Node_t & parent();
 
       bool valid();
 
       operator bool ();
+
+      Node_t & operator [] (int idx);
+      Node_t & operator [] (const char *name);
 
       bool operator != (const Iterator_t &rhs);
       bool operator == (const Iterator_t &rhs);

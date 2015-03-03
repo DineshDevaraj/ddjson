@@ -6,7 +6,7 @@
  * Email Id : dinesh@techybook.com
  *
  * Created  : 25 Feb 2015 - Wed
- * Updated  : 03 Mar 2015 - Mon
+ * Updated  : 03 Mar 2015 - Tue
  *
  * Licence : Refer the license file
  *
@@ -26,7 +26,7 @@ void PrintJson(Node_t &node)
    for( ; itr != node.end(); itr++)
    {
       printf("%s : ", (*itr).name.data());
-      switch((*itr).get_value_type())
+      switch((*itr).value_type())
       {
          case Valuetype::Int    : printf("%d\n", (*itr).value<int>());
                                   break;

@@ -6,7 +6,7 @@
  * Email Id : dinesh@techybook.com
  *
  * Created  : 19 Feb 2015 - Thu
- * Updated  : 03 Mar 2015 - Mon
+ * Updated  : 03 Mar 2015 - Tue
  *
  * Licence : Refer the license file
  *
@@ -260,7 +260,7 @@ Symbol Lexer_t::get_str(std::string &val)
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 namespace Icejson
 {
-   static Icejson::Node_t oInvalid;
+   #define oInvalid (*((Node_t *)0));
 
    struct Parser_t : public Node_t
    {
@@ -434,6 +434,8 @@ namespace Icejson
 {
    Doc_t::Doc_t() {}
 
+   Node_t & Doc_t::root() { return *proot; }
+
    Node_t & Doc_t::parse_string(const char *json_arg)
    {
       Lexer_t lex;
@@ -491,16 +493,50 @@ namespace Icejson
       return Iterator_t(NULL);
    }
 
+
+   Doc_t & Node_t::doc()     { return *pdoc;    }
+
+   Node_t & Node_t::root()   { return *proot;   }
+   Node_t & Node_t::prev()   { return *pprev;   }
+   Node_t & Node_t::next()   { return *pnext;   }
+   Node_t & Node_t::parent() { return *pparent; }
+
    bool Node_t::valid()     { return this != &oInvalid; }
    Node_t::operator bool () { return this != &oInvalid; }
    Iterator_t Node_t::end() { return Iterator_t(NULL);  }
 
-   Valuetype_t Node_t::get_value_type() { return vtype; }
+   Valuetype_t Node_t::value_type()     { return vtype; }
+
    template <> int Node_t::value()      { return vint;  }
    template <> float Node_t::value()    { return vreal; }
    template <> char Node_t::value()     { return vchar; }
    template <> string Node_t::value()   { return vstr;  }
    template <> Node_t & Node_t::value() { return *vobj; }
+
+   Node_t & Node_t::operator [] (int idx)
+   {
+      if(Valuetype::Array == vtype or 
+            Valuetype::Object == vtype)
+      {
+         Node_t *cur = this->vobj;
+         for(int I = 0; cur && I < idx; I++)
+            cur = cur->pnext;
+         return *cur;
+      }
+      return oInvalid;
+   }
+
+   Node_t & Node_t::operator [] (const char *name)
+   {
+      if(Valuetype::Object == vtype)
+      {
+         Node_t *cur = this->vobj;
+         while(cur)
+            if(cur->name == name)
+               return *cur;
+      }
+      return oInvalid;
+   }
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
