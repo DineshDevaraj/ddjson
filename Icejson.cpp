@@ -484,7 +484,6 @@ namespace Icejson
       vtype = Valuetype::Invalid;
    }
 
-
    Iterator_t Node_t::begin()
    {
       if(Valuetype::Array == vtype or
@@ -492,7 +491,6 @@ namespace Icejson
          return Iterator_t(vobj);
       return Iterator_t(NULL);
    }
-
 
    Doc_t & Node_t::doc()     { return *pdoc;    }
 
@@ -531,7 +529,7 @@ namespace Icejson
       if(Valuetype::Object == vtype)
       {
          Node_t *cur = this->vobj;
-         while(cur)
+         for( ; cur; cur = cur->pnext)
             if(cur->name == name)
                return *cur;
       }

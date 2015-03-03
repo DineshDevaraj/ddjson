@@ -57,7 +57,6 @@ namespace Icejson
    struct Doc_t
    {
       Doc_t();
-      Doc_t(Node_t *node);
 
       Error_t error;
 
@@ -70,7 +69,31 @@ namespace Icejson
       private : Node_t *proot;
    };
 
-   struct Node_t
+   struct Members_t
+   {
+      Doc_t *pdoc;
+
+      Node_t *proot;
+      Node_t *pnext;
+      Node_t *pprev;
+      Node_t *pparent;
+
+      string vstr;
+
+      union
+      {
+         int vint;
+         float vreal;
+         char vchar;
+         bool vbool;
+         Node_t *varr;
+         Node_t *vobj;
+      };
+
+      Valuetype_t vtype;
+   };
+
+   struct Node_t : private Members_t
    {
       Node_t();
 
@@ -99,29 +122,6 @@ namespace Icejson
 
       Iterator_t begin();
       Iterator_t end();
-
-      private :
-
-      Doc_t *pdoc;
-
-      Node_t *proot;
-      Node_t *pnext;
-      Node_t *pprev;
-      Node_t *pparent;
-
-      string vstr;
-
-      union
-      {
-         int vint;
-         float vreal;
-         char vchar;
-         bool vbool;
-         Node_t *varr;
-         Node_t *vobj;
-      };
-
-      Valuetype_t vtype;
 
       friend struct Parser_t;
       friend struct Iterator_t;
