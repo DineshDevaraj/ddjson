@@ -38,7 +38,7 @@ void PrintJson(Node_t &node)
                                   break;
          case Valuetype::Array  :
          case Valuetype::Object : printf("(%d)\n", (*itr).count());
-                                  PrintJson((*itr).value<Icejson::Node_t &>());
+                                  PrintJson((*itr));
                                   break;
          default : printf("\n");
       }
@@ -73,7 +73,9 @@ int main()
          break;
       }
 
+      printf("root : (%d)\n{", root.count());
       PrintJson(root);
+      printf("}\n");
       fclose(fh);
    }
 

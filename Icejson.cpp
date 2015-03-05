@@ -270,18 +270,8 @@ namespace Icejson
 
       bool ParseArray(Lexer_t &lex);
       bool ParseObject(Lexer_t &lex);
-      Parser_t * AddChild(Valuetype_t type);
       bool ParseNode(Lexer_t &lex, Symbol node_close);
    };
-
-   Parser_t * Parser_t::AddChild(Valuetype_t type)
-   {
-      Parser_t *pp = new Parser_t;
-      pp->pparent = this;
-      pp->vtype = type;
-      vobj = pp;
-      return pp;
-   }
 
    bool Parser_t::ParseNode(Lexer_t &lex, Symbol node_close)
    {
@@ -340,15 +330,12 @@ namespace Icejson
                                 lex.next();
                                 break;
 
-         case LEX_ARRAY_OPEN  : Valuetype_t type;
-                                type = Valuetype::Array;
-                                AddChild(type)->ParseArray(lex);
+         case LEX_ARRAY_OPEN  : ParseArray(lex);
                                 vtype = Valuetype::Array;
                                 lex.next(); /* move past array close symbol */
                                 break;
 
-         case LEX_OBJECT_OPEN : type = Valuetype::Object;
-                                AddChild(type)->ParseObject(lex);
+         case LEX_OBJECT_OPEN : ParseObject(lex);
                                 vtype = Valuetype::Object;
                                 lex.next(); /* move past object close symbol */
                                 break;
@@ -503,6 +490,8 @@ namespace Icejson
    Node_t & Node_t::next()   { return *pnext;   }
    Node_t & Node_t::parent() { return *pparent; }
 
+   int Node_t::count()       { return pcount;   }
+
    bool Node_t::valid()     { return this != &oInvalid; }
    Node_t::operator bool () { return this != &oInvalid; }
    Iterator_t Node_t::end() { return Iterator_t(NULL);  }
@@ -514,14 +503,6 @@ namespace Icejson
    template <> char Node_t::value()     { return vchar; }
    template <> string Node_t::value()   { return vstr;  }
    template <> Node_t & Node_t::value() { return *vobj; }
-
-   int Node_t::count()
-   {
-      if(Valuetype::Array == vtype or 
-            Valuetype::Object == vtype)
-         return vobj->pcount;
-      return 1;
-   }
 
    Node_t & Node_t::operator [] (int idx)
    {
