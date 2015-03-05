@@ -371,12 +371,14 @@ namespace Icejson
       if(LEX_ARRAY_CLOSE == lex.next())
          return OK;
 
+      pcount++;
       vobj = pp = new Parser_t;
       pp->pparent = this;
       pp->ParseNode(lex, LEX_ARRAY_CLOSE);
 
       while(LEX_ARRAY_CLOSE != lex.cur_sym)
       {
+         pcount++;
          lex.next();
          Parser_t *swp = new Parser_t;
          swp->pprev = pp;
@@ -409,6 +411,7 @@ namespace Icejson
          if(LEX_NAME_SEPERATOR != lex.next())
             trw_err("Expected name seperator");
          
+         pcount++;
          lex.next();
          pp->pparent = this;
          pp->ParseNode(lex, LEX_OBJECT_CLOSE);
@@ -472,14 +475,15 @@ namespace Icejson
 {
    Node_t::Node_t()    
    {
+      pcount = 0;
+
       pdoc = NULL;
+      vobj = NULL;
 
       proot = NULL;
       pnext = NULL;
       pprev = NULL;
       pparent = NULL;
-
-      vobj = NULL;
 
       vtype = Valuetype::Invalid;
    }
@@ -510,6 +514,14 @@ namespace Icejson
    template <> char Node_t::value()     { return vchar; }
    template <> string Node_t::value()   { return vstr;  }
    template <> Node_t & Node_t::value() { return *vobj; }
+
+   int Node_t::count()
+   {
+      if(Valuetype::Array == vtype or 
+            Valuetype::Object == vtype)
+         return vobj->pcount;
+      return 1;
+   }
 
    Node_t & Node_t::operator [] (int idx)
    {

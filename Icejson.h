@@ -78,7 +78,9 @@ namespace Icejson
       Node_t *pprev;
       Node_t *pparent;
 
+      int pcount;
       string vstr;
+      Valuetype_t vtype;
 
       union
       {
@@ -89,8 +91,6 @@ namespace Icejson
          Node_t *varr;
          Node_t *vobj;
       };
-
-      Valuetype_t vtype;
    };
 
    struct Node_t : private Members_t
@@ -109,7 +109,8 @@ namespace Icejson
       Node_t & next();
       Node_t & prev();
       Node_t & parent();
-
+      
+      int count();
       bool valid();
 
       operator bool ();

@@ -37,7 +37,7 @@ void PrintJson(Node_t &node)
          case Valuetype::String : printf("%s\n", (*itr).value<string>().data());
                                   break;
          case Valuetype::Array  :
-         case Valuetype::Object : printf("\n");
+         case Valuetype::Object : printf("(%d)\n", (*itr).count());
                                   PrintJson((*itr).value<Icejson::Node_t &>());
                                   break;
          default : printf("\n");
