@@ -1,12 +1,9 @@
 
 /**
  *
- * Author   : D.Dinesh
- * Website  : www.techybook.com
- * Email Id : dinesh@techybook.com
- *
- * Created  : 19 Feb 2015 - Thu
- * Updated  : 03 Mar 2015 - Tue
+ * Author  : D.Dinesh
+ *           www.techybook.com
+ *           dinesh@techybook.com
  *
  * Licence : Refer the license file
  *
@@ -262,6 +259,14 @@ namespace Icejson
 {
    #define oInvalid (*((Node_t *)0));
 
+   #define NEXT_NEW_NODE(ptr) \
+   ({ \
+         Parser_t *swp = new Parser_t; \
+         swp->pprev = pp; \
+         pp->pnext = pp = swp; \
+         pp->pparent = this; \
+    })
+
    struct Parser_t : public Node_t
    {
       Parser_t() {}
@@ -367,12 +372,11 @@ namespace Icejson
       {
          pcount++;
          lex.next();
-         Parser_t *swp = new Parser_t;
-         swp->pprev = pp;
-         pp->pnext = pp = swp;
-         pp->pparent = this;
+         NEXT_NEW_NODE(pp);
          pp->ParseNode(lex, LEX_ARRAY_CLOSE);
       }
+
+      vlast = pp;
 
       return OK;
    }
@@ -402,15 +406,18 @@ namespace Icejson
          lex.next();
          pp->pparent = this;
          pp->ParseNode(lex, LEX_OBJECT_CLOSE);
-
-         Parser_t *swp = new Parser_t;
-         swp->pprev = pp;
-         pp->pnext = swp;
-         pp = swp;
+         NEXT_NEW_NODE(pp);
       }
 
-      if(NULL == pp->pprev) vobj = NULL;
-      else pp->pprev->pnext = NULL;
+      if(vobj == pp) /* object is empty */
+      {
+         vobj = NULL;
+      }
+      else
+      {
+         vlast = pp->pprev;
+         vlast->pnext = NULL;
+      }
       delete pp;
 
       return OK;

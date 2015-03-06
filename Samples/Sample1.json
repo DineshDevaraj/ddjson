@@ -4,16 +4,17 @@
    "%string" : "Hello World!",
    "%string" : "First\tline\nsecond\b line",
    "%string" : "Unicode \u0030 \u0039 \u0061",
-   "@array" : [10, 11, 12],
+   "@array" : [10, 11, {}, 12],
    "!float" : 0.25E+1,
    "!float" : 73.25e-1,
    "-negative" : -13,
    "-ve float" : -0.7e3,
+   "empty_array" : [],
    "name [10] with a index {`~!@#$%^&*()_+=-}" : 10,
    "nested" : 
    { 
       "username" : "Dinesh",
-      "password" : "#Dine[89]",
+      "password" : {},
       "county" : "India"
    }
 }

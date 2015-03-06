@@ -1,12 +1,9 @@
 
 /**
  *
- * Author   : D.Dinesh
- * Website  : www.techybook.com
- * Email Id : dinesh@techybook.com
- *
- * Created  : 24 Feb 2015 - Tue
- * Updated  : 03 Mar 2015 - Tue
+ * Author  : D.Dinesh
+ *           www.techybook.com
+ *           dinesh@techybook.com
  *
  * Licence : Refer the license file
  *
@@ -85,11 +82,18 @@ namespace Icejson
       union
       {
          int vint;
-         float vreal;
          char vchar;
          bool vbool;
-         Node_t *varr;
-         Node_t *vobj;
+         float vreal;
+         struct
+         {
+            union
+            {
+               Node_t *varr;
+               Node_t *vobj;
+            };
+            Node_t *vlast;
+         };
       };
    };
 

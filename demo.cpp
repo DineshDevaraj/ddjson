@@ -1,12 +1,9 @@
 
 /**
  *
- * Author   : D.Dinesh
- * Website  : www.techybook.com
- * Email Id : dinesh@techybook.com
- *
- * Created  : 25 Feb 2015 - Wed
- * Updated  : 03 Mar 2015 - Tue
+ * Author  : D.Dinesh
+ *           www.techybook.com
+ *           dinesh@techybook.com
  *
  * Licence : Refer the license file
  *
@@ -76,6 +73,7 @@ int main()
       printf("root : (%d)\n{", root.count());
       PrintJson(root);
       printf("}\n");
+
       fclose(fh);
    }
 
