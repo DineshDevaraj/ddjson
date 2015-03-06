@@ -482,7 +482,7 @@ namespace Icejson
       vtype = Valuetype::Invalid;
    }
 
-   Iterator_t Node_t::forward()
+   Iterator_t Node_t::front()
    {
       if(Valuetype::Array == vtype or
             Valuetype::Object == vtype)
@@ -490,7 +490,7 @@ namespace Icejson
       return Iterator_t(NULL);
    }
 
-   Iterator_t Node_t::backward()
+   Iterator_t Node_t::back()
    {
       if(Valuetype::Array == vtype or
             Valuetype::Object == vtype)

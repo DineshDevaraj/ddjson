@@ -125,8 +125,8 @@ namespace Icejson
       bool operator != (const Iterator_t &rhs);
       bool operator == (const Iterator_t &rhs);
 
-      Iterator_t forward();
-      Iterator_t backward();
+      Iterator_t front();
+      Iterator_t back();
 
       friend struct Parser_t;
       friend struct Iterator_t;

@@ -19,7 +19,7 @@ using namespace Icejson;
 
 void PrintJson(Node_t &node)
 {
-   Iterator_t itr = node.forward();
+   Iterator_t itr = node.front();
    for( ; itr; itr++)
    {
       printf("%s : ", (*itr).name.data());
