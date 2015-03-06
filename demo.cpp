@@ -19,8 +19,8 @@ using namespace Icejson;
 
 void PrintJson(Node_t &node)
 {
-   Iterator_t itr = node.begin();
-   for( ; itr != node.end(); itr++)
+   Iterator_t itr = node.forward();
+   for( ; itr; itr++)
    {
       printf("%s : ", (*itr).name.data());
       switch((*itr).value_type())
@@ -70,9 +70,7 @@ int main()
          break;
       }
 
-      printf("root : (%d)\n{", root.count());
       PrintJson(root);
-      printf("}\n");
 
       fclose(fh);
    }

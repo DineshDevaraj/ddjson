@@ -482,11 +482,19 @@ namespace Icejson
       vtype = Valuetype::Invalid;
    }
 
-   Iterator_t Node_t::begin()
+   Iterator_t Node_t::forward()
    {
       if(Valuetype::Array == vtype or
             Valuetype::Object == vtype)
          return Iterator_t(vobj);
+      return Iterator_t(NULL);
+   }
+
+   Iterator_t Node_t::backward()
+   {
+      if(Valuetype::Array == vtype or
+            Valuetype::Object == vtype)
+         return Iterator_t(vlast);
       return Iterator_t(NULL);
    }
 
@@ -501,7 +509,6 @@ namespace Icejson
 
    bool Node_t::valid()     { return this != &oInvalid; }
    Node_t::operator bool () { return this != &oInvalid; }
-   Iterator_t Node_t::end() { return Iterator_t(NULL);  }
 
    Valuetype_t Node_t::value_type()     { return vtype; }
 
@@ -547,11 +554,16 @@ namespace Icejson
    Iterator_t::Iterator_t(Node_t *node) :
       pcur(node) {}
 
+   Iterator_t::operator bool()
+   {
+      return pcur;
+   }
+
    Node_t & Iterator_t::operator * ()
    {
       return *pcur;
    }
-
+   
    Iterator_t & Iterator_t::operator ++ ()
    {
       pcur = pcur->pnext;

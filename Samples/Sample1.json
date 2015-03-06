@@ -14,7 +14,7 @@
    "nested" : 
    { 
       "username" : "Dinesh",
-      "password" : {},
+      "password" : ["#Ind[47]", {}, 56.43],
       "county" : "India"
    }
 }
