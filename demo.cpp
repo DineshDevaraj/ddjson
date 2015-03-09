@@ -20,24 +20,23 @@ using namespace Icejson;
 void PrintJson(Node_t &node)
 {
    Iterator_t itr = node.front();
-   for( ; itr; itr++)
+   for( ; Node_t &ref = *itr; ++itr)
    {
-      printf("%s : ", (*itr).name.data());
-      switch((*itr).value_type())
+      printf("%s : ", ref.name.data());
+      switch(ref.value_type())
       {
-         case Valuetype::Int    : printf("%d\n", (*itr).value<int>());
+         case Valuetype::Int    : cout << (int)ref << endl;
                                   break;
-         case Valuetype::Float  : printf("%f\n", (*itr).value<float>());
+         case Valuetype::Char   : cout << (char)ref << endl;
                                   break;
-         case Valuetype::Char   : printf("%c\n", (*itr).value<char>());
+         case Valuetype::Float  : cout << (float)ref << endl;
                                   break;
-         case Valuetype::String : printf("%s\n", (*itr).value<string>().data());
+         case Valuetype::String : cout << (string)ref << endl;
                                   break;
          case Valuetype::Array  :
-         case Valuetype::Object : printf("(%d)\n", (*itr).count());
-                                  PrintJson((*itr));
+         case Valuetype::Object : printf("(%d)\n", ref.count());
+                                  PrintJson(ref);
                                   break;
-         default : printf("\n");
       }
    }
    return;

@@ -108,8 +108,6 @@ namespace Icejson
 
       Valuetype_t value_type();
 
-      template <typename type> type value();
-
       Node_t & next();
       Node_t & prev();
       Node_t & parent();
@@ -125,8 +123,14 @@ namespace Icejson
       bool operator != (const Iterator_t &rhs);
       bool operator == (const Iterator_t &rhs);
 
-      Iterator_t front();
-      Iterator_t back();
+      operator int ();
+      operator char ();
+      operator float ();
+      operator string ();
+      operator Node_t & ();
+
+      Iterator_t front() const;
+      Iterator_t back() const;
 
       friend struct Parser_t;
       friend struct Iterator_t;

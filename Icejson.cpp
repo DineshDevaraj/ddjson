@@ -482,7 +482,7 @@ namespace Icejson
       vtype = Valuetype::Invalid;
    }
 
-   Iterator_t Node_t::front()
+   Iterator_t Node_t::front() const
    {
       if(Valuetype::Array == vtype or
             Valuetype::Object == vtype)
@@ -490,7 +490,7 @@ namespace Icejson
       return Iterator_t(NULL);
    }
 
-   Iterator_t Node_t::back()
+   Iterator_t Node_t::back() const
    {
       if(Valuetype::Array == vtype or
             Valuetype::Object == vtype)
@@ -512,11 +512,11 @@ namespace Icejson
 
    Valuetype_t Node_t::value_type()     { return vtype; }
 
-   template <> int Node_t::value()      { return vint;  }
-   template <> float Node_t::value()    { return vreal; }
-   template <> char Node_t::value()     { return vchar; }
-   template <> string Node_t::value()   { return vstr;  }
-   template <> Node_t & Node_t::value() { return *vobj; }
+   Node_t::operator int ()      { return vint;  }
+   Node_t::operator char ()     { return vchar; }
+   Node_t::operator float ()    { return vreal; }
+   Node_t::operator string ()   { return vstr;  }
+   Node_t::operator Node_t & () { return *vobj; }
 
    Node_t & Node_t::operator [] (int idx)
    {
