@@ -22,19 +22,19 @@ void PrintJson(Node_t &node)
    Iterator_t itr = node.front();
    for( ; Node_t &ref = *itr; ++itr)
    {
-      printf("%s : ", ref.name.data());
+      fprintf(stderr, "%s : ", ref.name.data());
       switch(ref.value_type())
       {
-         case Valuetype::Int    : cout << (int)ref << endl;
+         case Valuetype::Int    : cerr << (int)ref << endl;
                                   break;
-         case Valuetype::Char   : cout << (char)ref << endl;
+         case Valuetype::Char   : cerr << (char)ref << endl;
                                   break;
-         case Valuetype::Float  : cout << (float)ref << endl;
+         case Valuetype::Float  : cerr << (float)ref << endl;
                                   break;
-         case Valuetype::String : cout << (string)ref << endl;
+         case Valuetype::String : cerr << (string)ref << endl;
                                   break;
          case Valuetype::Array  :
-         case Valuetype::Object : printf("(%d)\n", ref.count());
+         case Valuetype::Object : fprintf(stderr, "(%d)\n", ref.count());
                                   PrintJson(ref);
                                   break;
       }

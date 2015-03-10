@@ -103,34 +103,33 @@ namespace Icejson
 
       string name;
 
-      Doc_t & doc();
-      Node_t & root();
+      Doc_t & doc() const;
+      Node_t & root() const;
 
-      Valuetype_t value_type();
+      Valuetype_t value_type() const;
 
-      Node_t & next();
-      Node_t & prev();
-      Node_t & parent();
+      Node_t & next() const;
+      Node_t & prev() const;
+      Node_t & parent() const;
       
-      int count();
-      bool valid();
+      int count() const;
+      bool valid() const;
 
-      operator bool ();
+      operator bool () const;
 
-      Node_t & operator [] (int idx);
-      Node_t & operator [] (const char *name);
+      Node_t & operator [] (int idx) const;
+      Node_t & operator [] (const char *name) const;
 
-      bool operator != (const Iterator_t &rhs);
-      bool operator == (const Iterator_t &rhs);
+      bool operator != (const Iterator_t &rhs) const;
+      bool operator == (const Iterator_t &rhs) const;
 
-      operator int ();
-      operator char ();
-      operator float ();
-      operator string ();
-      operator Node_t & ();
+      operator int () const;
+      operator char () const;
+      operator float () const;
+      operator string () const;
 
-      Iterator_t front() const;
       Iterator_t back() const;
+      Iterator_t front() const;
 
       friend struct Parser_t;
       friend struct Iterator_t;

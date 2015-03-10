@@ -257,7 +257,7 @@ Symbol Lexer_t::get_str(std::string &val)
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 namespace Icejson
 {
-   #define oInvalid (*((Node_t *)0));
+   #define oInvalid (*((Node_t *)0))
 
    #define NEXT_NEW_NODE(ptr) \
    ({ \
@@ -484,41 +484,42 @@ namespace Icejson
 
    Iterator_t Node_t::front() const
    {
-      if(Valuetype::Array == vtype or
-            Valuetype::Object == vtype)
+      if(this != &oInvalid and
+        (Valuetype::Array == vtype or
+            Valuetype::Object == vtype))
          return Iterator_t(vobj);
       return Iterator_t(NULL);
    }
 
    Iterator_t Node_t::back() const
    {
-      if(Valuetype::Array == vtype or
-            Valuetype::Object == vtype)
+      if(this != &oInvalid and
+        (Valuetype::Array == vtype or
+            Valuetype::Object == vtype))
          return Iterator_t(vlast);
       return Iterator_t(NULL);
    }
 
-   Doc_t & Node_t::doc()     { return *pdoc;    }
+   Doc_t & Node_t::doc()  const   { return *pdoc;    }
 
-   Node_t & Node_t::root()   { return *proot;   }
-   Node_t & Node_t::prev()   { return *pprev;   }
-   Node_t & Node_t::next()   { return *pnext;   }
-   Node_t & Node_t::parent() { return *pparent; }
+   Node_t & Node_t::root() const  { return *proot;   }
+   Node_t & Node_t::prev() const   { return *pprev;   }
+   Node_t & Node_t::next()   const { return *pnext;   }
+   Node_t & Node_t::parent() const { return *pparent; }
 
-   int Node_t::count()       { return pcount;   }
+   int Node_t::count() const       { return pcount;   }
 
-   bool Node_t::valid()     { return this != &oInvalid; }
-   Node_t::operator bool () { return this != &oInvalid; }
+   bool Node_t::valid() const     { return this != &oInvalid; }
+   Node_t::operator bool () const { return this != &oInvalid; }
 
-   Valuetype_t Node_t::value_type()     { return vtype; }
+   Valuetype_t Node_t::value_type() const     { return vtype; }
 
-   Node_t::operator int ()      { return vint;  }
-   Node_t::operator char ()     { return vchar; }
-   Node_t::operator float ()    { return vreal; }
-   Node_t::operator string ()   { return vstr;  }
-   Node_t::operator Node_t & () { return *vobj; }
+   Node_t::operator int () const      { return vint;  }
+   Node_t::operator char () const    { return vchar; }
+   Node_t::operator float ()   const  { return vreal; }
+   Node_t::operator string () const  { return vstr;  }
 
-   Node_t & Node_t::operator [] (int idx)
+   Node_t & Node_t::operator [] (int idx) const
    {
       if(Valuetype::Array == vtype or 
             Valuetype::Object == vtype)
@@ -531,7 +532,7 @@ namespace Icejson
       return oInvalid;
    }
 
-   Node_t & Node_t::operator [] (const char *name)
+   Node_t & Node_t::operator [] (const char *name) const
    {
       if(Valuetype::Object == vtype)
       {
