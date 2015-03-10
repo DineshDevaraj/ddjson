@@ -25,18 +25,18 @@ void PrintJson(Node_t &node)
       fprintf(stderr, "%s : ", ref.name.data());
       switch(ref.value_type())
       {
-         case Valuetype::Int    : cerr << (int)ref << endl;
-                                  break;
-         case Valuetype::Char   : cerr << (char)ref << endl;
-                                  break;
-         case Valuetype::Float  : cerr << (float)ref << endl;
-                                  break;
-         case Valuetype::String : cerr << (string)ref << endl;
-                                  break;
-         case Valuetype::Array  :
-         case Valuetype::Object : fprintf(stderr, "(%d)\n", ref.count());
-                                  PrintJson(ref);
-                                  break;
+         case Valtype::Int    : cerr << (int)ref << endl;
+                                break;
+         case Valtype::Char   : cerr << (char)ref << endl;
+                                break;
+         case Valtype::Float  : cerr << (float)ref << endl;
+                                break;
+         case Valtype::String : cerr << (string)ref << endl;
+                                break;
+         case Valtype::Array  :
+         case Valtype::Object : fprintf(stderr, "(%d)\n", ref.count());
+                                PrintJson(ref);
+                                break;
       }
    }
    return;

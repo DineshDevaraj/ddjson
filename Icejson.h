@@ -25,7 +25,7 @@ namespace Icejson
    struct Iterator_t;
 
    /* different value types supported in JSON */
-   struct Valuetype
+   struct Valtype
    {
       enum Values
       {
@@ -41,7 +41,7 @@ namespace Icejson
       };
    };
 
-   typedef Valuetype::Values Valuetype_t;
+   typedef Valtype::Values Valtype_t;
 
    struct Error_t
    {
@@ -77,7 +77,7 @@ namespace Icejson
 
       int pcount;
       string vstr;
-      Valuetype_t vtype;
+      Valtype_t vtype;
 
       union
       {
@@ -106,7 +106,7 @@ namespace Icejson
       Doc_t & doc() const;
       Node_t & root() const;
 
-      Valuetype_t value_type() const;
+      Valtype_t value_type() const;
 
       Node_t & next() const;
       Node_t & prev() const;
@@ -117,7 +117,7 @@ namespace Icejson
 
       operator bool () const;
 
-      Node_t & operator [] (int idx) const;
+      Node_t & operator [] (const int idx) const;
       Node_t & operator [] (const char *name) const;
 
       bool operator != (const Iterator_t &rhs) const;

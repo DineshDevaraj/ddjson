@@ -271,7 +271,7 @@ namespace Icejson
    {
       Parser_t() {}
 
-      Parser_t(Valuetype_t type) { vtype = type; }
+      Parser_t(Valtype_t type) { vtype = type; }
 
       bool ParseArray(Lexer_t &lex);
       bool ParseObject(Lexer_t &lex);
@@ -287,12 +287,12 @@ namespace Icejson
                                 if(LEX_INT == lex.get_num(val))
                                 {
                                    vint = atoi(val);
-                                   vtype = Valuetype::Int;
+                                   vtype = Valtype::Int;
                                 }
                                 else 
                                 {
                                    vreal = atof(val);
-                                   vtype = Valuetype::Float;
+                                   vtype = Valtype::Float;
                                 }
                                 break;
 
@@ -304,7 +304,7 @@ namespace Icejson
                                 else 
                                 { 
                                    vchar = *val; 
-                                   vtype = Valuetype::Char; 
+                                   vtype = Valtype::Char; 
                                    lex.next(); 
                                    break; 
                                 }
@@ -317,31 +317,31 @@ namespace Icejson
                                 else 
                                 { 
                                    lex.next(); 
-                                   vtype = Valuetype::String; 
+                                   vtype = Valtype::String; 
                                    break; 
                                 }
 
          case LEX_BOOL_TRUE   : vbool = true;
-                                vtype = Valuetype::Bool;
+                                vtype = Valtype::Bool;
                                 lex.next();
                                 break;
          
          case LEX_BOOL_FALSE  : vbool = false;
-                                vtype = Valuetype::Bool;
+                                vtype = Valtype::Bool;
                                 lex.next();
                                 break;
 
-         case LEX_NULL        : vtype = Valuetype::Null;
+         case LEX_NULL        : vtype = Valtype::Null;
                                 lex.next();
                                 break;
 
          case LEX_ARRAY_OPEN  : ParseArray(lex);
-                                vtype = Valuetype::Array;
+                                vtype = Valtype::Array;
                                 lex.next(); /* move past array close symbol */
                                 break;
 
          case LEX_OBJECT_OPEN : ParseObject(lex);
-                                vtype = Valuetype::Object;
+                                vtype = Valtype::Object;
                                 lex.next(); /* move past object close symbol */
                                 break;
 
@@ -445,7 +445,7 @@ namespace Icejson
          if(LEX_OBJECT_OPEN != lex.cur_sym)
             trw_err("Expected object at start");
 
-         pp = new Parser_t(Valuetype::Object);
+         pp = new Parser_t(Valtype::Object);
          pp->ParseObject(lex);
 
          return *pp;
@@ -479,14 +479,14 @@ namespace Icejson
       pprev = NULL;
       pparent = NULL;
 
-      vtype = Valuetype::Invalid;
+      vtype = Valtype::Invalid;
    }
 
    Iterator_t Node_t::front() const
    {
       if(this != &oInvalid and
-        (Valuetype::Array == vtype or
-            Valuetype::Object == vtype))
+        (Valtype::Array == vtype or
+            Valtype::Object == vtype))
          return Iterator_t(vobj);
       return Iterator_t(NULL);
    }
@@ -494,17 +494,17 @@ namespace Icejson
    Iterator_t Node_t::back() const
    {
       if(this != &oInvalid and
-        (Valuetype::Array == vtype or
-            Valuetype::Object == vtype))
+        (Valtype::Array == vtype or
+            Valtype::Object == vtype))
          return Iterator_t(vlast);
       return Iterator_t(NULL);
    }
 
-   Doc_t & Node_t::doc()  const   { return *pdoc;    }
+   Doc_t & Node_t::doc() const     { return *pdoc;    }
 
-   Node_t & Node_t::root() const  { return *proot;   }
+   Node_t & Node_t::root() const   { return *proot;   }
    Node_t & Node_t::prev() const   { return *pprev;   }
-   Node_t & Node_t::next()   const { return *pnext;   }
+   Node_t & Node_t::next() const   { return *pnext;   }
    Node_t & Node_t::parent() const { return *pparent; }
 
    int Node_t::count() const       { return pcount;   }
@@ -512,19 +512,19 @@ namespace Icejson
    bool Node_t::valid() const     { return this != &oInvalid; }
    Node_t::operator bool () const { return this != &oInvalid; }
 
-   Valuetype_t Node_t::value_type() const     { return vtype; }
+   Valtype_t Node_t::value_type() const { return vtype; }
 
-   Node_t::operator int () const      { return vint;  }
-   Node_t::operator char () const    { return vchar; }
-   Node_t::operator float ()   const  { return vreal; }
-   Node_t::operator string () const  { return vstr;  }
+   Node_t::operator int    () const { return vint;  }
+   Node_t::operator char   () const { return vchar; }
+   Node_t::operator float  () const { return vreal; }
+   Node_t::operator string () const { return vstr;  }
 
-   Node_t & Node_t::operator [] (int idx) const
+   Node_t & Node_t::operator [] (const int idx) const
    {
-      if(Valuetype::Array == vtype or 
-            Valuetype::Object == vtype)
+      if(Valtype::Array == vtype or 
+            Valtype::Object == vtype)
       {
-         Node_t *cur = this->vobj;
+         Node_t *cur = vobj;
          for(int I = 0; cur && I < idx; I++)
             cur = cur->pnext;
          return *cur;
@@ -534,9 +534,9 @@ namespace Icejson
 
    Node_t & Node_t::operator [] (const char *name) const
    {
-      if(Valuetype::Object == vtype)
+      if(Valtype::Object == vtype)
       {
-         Node_t *cur = this->vobj;
+         Node_t *cur = vobj;
          for( ; cur; cur = cur->pnext)
             if(cur->name == name)
                return *cur;
