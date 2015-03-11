@@ -4,7 +4,7 @@
    "%string" : "Hello World!",
    "%string" : "First\tline\nsecond\b line",
    "%string" : "Unicode \u0030 \u0039 \u0061",
-   "@array" : [10, 11, {}, 12],
+   "@array" : [10, ['a', 'b', 'c'], 11, {}, 12],
    "!float" : 0.25E+1,
    "!float" : 73.25e-1,
    "-negative" : -13,
@@ -14,7 +14,7 @@
    "nested" : 
    { 
       "username" : "Dinesh",
-      "password" : ["#Ind[47]", {}, 56.43],
+      "password" : ["#Ind[47]", { "object" : "in array", "second" : "in array" }, 56.43],
       "county" : "India"
    }
 }

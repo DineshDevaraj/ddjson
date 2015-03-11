@@ -9,7 +9,7 @@
  *
  **/
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 
 #include "Icejson.h"
@@ -69,7 +69,10 @@ int main()
          break;
       }
 
-      PrintJson(root);
+      //PrintJson(root);
+
+      root.write(stderr, "   ");
+      printf("\n");
 
       fclose(fh);
    }

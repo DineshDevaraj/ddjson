@@ -252,6 +252,7 @@ Symbol Lexer_t::get_str(std::string &val)
    return get_sym();
 }
 
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |        Parser related implementations starts      |
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -261,7 +262,7 @@ namespace Icejson
 
    #define NEXT_NEW_NODE(ptr) \
    ({ \
-         Parser_t *swp = new Parser_t; \
+         Parser_t *swp = new Parser_t(pdoc); \
          swp->pprev = pp; \
          pp->pnext = pp = swp; \
          pp->pparent = this; \
@@ -269,9 +270,13 @@ namespace Icejson
 
    struct Parser_t : public Node_t
    {
-      Parser_t() {}
+      Parser_t(Doc_t *doc) { pdoc = doc; }
 
-      Parser_t(Valtype_t type) { vtype = type; }
+      Parser_t(Doc_t *doc, Valtype_t type) 
+      { 
+         pdoc = doc;
+         vtype = type; 
+      }
 
       bool ParseArray(Lexer_t &lex);
       bool ParseObject(Lexer_t &lex);
@@ -364,7 +369,7 @@ namespace Icejson
          return OK;
 
       pcount++;
-      vobj = pp = new Parser_t;
+      vobj = pp = new Parser_t(pdoc);
       pp->pparent = this;
       pp->ParseNode(lex, LEX_ARRAY_CLOSE);
 
@@ -384,7 +389,7 @@ namespace Icejson
    bool Parser_t::ParseObject(Lexer_t &lex)
    {
       Parser_t *pp = NULL;
-      vobj = pp = new Parser_t;
+      vobj = pp = new Parser_t(pdoc);
 
       while(LEX_OBJECT_CLOSE != lex.cur_sym)
       {
@@ -424,6 +429,7 @@ namespace Icejson
    }
 }
 
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |        Document related implementations starts      |
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -445,7 +451,7 @@ namespace Icejson
          if(LEX_OBJECT_OPEN != lex.cur_sym)
             trw_err("Expected object at start");
 
-         pp = new Parser_t(Valtype::Object);
+         pp = new Parser_t(this, Valtype::Object);
          pp->ParseObject(lex);
 
          return *pp;
@@ -461,6 +467,119 @@ namespace Icejson
       return oInvalid;
    }
 }
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+ |       Writer realted implementation            |
+ `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+namespace Icejson
+{
+   struct Writer_t
+   {
+      Writer_t();
+
+      string obj_bgn;
+      string obj_end;
+      string obj_dlm;
+
+      string arr_bgn;
+      string arr_end;
+      string arr_dlm;
+
+      string name_bgn;
+      string name_end;
+
+      string each_pad;
+      string last_pad;
+
+      string int_format;
+      string str_format;
+      string char_format;
+      string float_format;
+   };
+
+   Writer_t::Writer_t() 
+   {
+      obj_bgn = "{";
+      obj_end = "}";
+      obj_dlm = ",";
+
+      arr_bgn = "[";
+      arr_end = "]";
+      arr_dlm = ", ";
+
+      name_bgn = "\"";
+      name_end = "\" : ";
+
+      each_pad = "\n";
+      last_pad = "\n";
+
+      int_format = "%d";
+      str_format = "\"%s\"";
+      char_format = "'%c'";
+      float_format = "%f";
+   }
+
+   int Node_t::write(FILE *fh, const char *pad, int level)
+   {
+      int len = 0;
+      Writer_t wrt;
+      Node_t *itr = NULL;
+
+      if(not name.empty())
+      {
+         len += fprintf(fh, "%s", wrt.each_pad.data());
+         for(int I = 0; I < level; I++)
+            len += fprintf(fh, "%s", pad);
+         len += fprintf(fh, "%s%s%s", wrt.name_bgn.data(), 
+               name.data(), wrt.name_end.data());
+      }
+
+      switch(vtype)
+      {
+         case Valtype::Int : len += fprintf(fh, wrt.int_format.data(), vint); 
+                             break;
+         case Valtype::Char : len += fprintf(fh, wrt.char_format.data(), vchar); 
+                              break;
+         case Valtype::Float : len += fprintf(fh, wrt.float_format.data(), vreal); 
+                               break;
+         case Valtype::String : len += fprintf(fh, wrt.str_format.data(), vstr.data()); 
+                                break;
+
+         case Valtype::Array : len += fprintf(fh, "%s", wrt.arr_bgn.data());
+                               if(vobj) for(itr = vobj; ; )
+                               {
+                                  len += itr->write(fh, pad, level + 1);
+                                  itr  = itr->pnext;
+                                  if(itr) len += fprintf(fh, "%s", wrt.arr_dlm.data());
+                                  else break;
+                               }
+                               len += fprintf(fh, "%s", wrt.arr_end.data());
+                               break;
+
+         case Valtype::Object : len += fprintf(fh, "%s", wrt.obj_bgn.data());
+                                if(vobj)
+                                {
+                                   for(itr = vobj; ; )
+                                   {
+                                      len += itr->write(fh, pad, level + 1);
+                                      itr = itr->pnext;
+                                      if(itr) len += fprintf(fh, "%s", wrt.obj_dlm.data());
+                                      else { len += fprintf(fh, "%s", wrt.last_pad.data()); break; }
+                                   }
+                                   for(int I = 0; I < level; I++)
+                                      len += fprintf(fh, "%s", pad);
+                                }
+                                len += fprintf(fh, "%s", wrt.obj_end.data());
+                                break;
+
+         case Valtype::Null : len += fprintf(fh, "null"); break;
+      }
+
+      return len;
+   }
+}
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |       Node related implementations starts      |

@@ -133,6 +133,9 @@ namespace Icejson
 
       friend struct Parser_t;
       friend struct Iterator_t;
+      
+      int write(FILE *fh, const char *pad = "\0", int level = 0);
+      int write(ostream &os = cout, const char *pad = "\0", int level = 0);
    };
 
    struct Iterator_t
