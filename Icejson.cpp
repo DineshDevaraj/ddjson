@@ -49,7 +49,6 @@ enum Symbol
    LEX_INT              = 'I'    ,
    LEX_NEG              = '-'    ,
    LEX_FLOAT            = '.'    ,
-   LEX_CHAR             = '\''   ,
    LEX_STRING           = '"'    ,
    LEX_NULL             = 'N'    ,
    LEX_BOOL_TRUE        = 'T'    ,
@@ -115,7 +114,6 @@ Symbol Lexer_t::get_sym()
    switch(ch)
    {
       case LEX_NEG             :
-      case LEX_CHAR            :
       case LEX_STRING          :
       case LEX_ARRAY_OPEN      :
       case LEX_ARRAY_CLOSE     :
@@ -180,13 +178,6 @@ Symbol Lexer_t::get_num(const char * &val)
    get_sym();
 
    return sym;
-}
-
-Symbol Lexer_t::get_char(const char * &val)
-{
-   cur_pos++; /* ship char symbol */
-   val = cur_pos++;
-   return get_sym();
 }
 
 Symbol Lexer_t::get_str(std::string &val)
@@ -300,19 +291,6 @@ namespace Icejson
                                    vtype = Valtype::Float;
                                 }
                                 break;
-
-         case LEX_CHAR        : lex.get_char(val);
-                                if(LEX_CHAR != lex.cur_sym)
-                                {
-                                   trw_err("Unterminated char value");
-                                }
-                                else 
-                                { 
-                                   vchar = *val; 
-                                   vtype = Valtype::Char; 
-                                   lex.next(); 
-                                   break; 
-                                }
 
          case LEX_STRING      : lex.get_str(vstr);
                                 if(LEX_STRING != lex.cur_sym)
