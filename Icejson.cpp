@@ -474,46 +474,8 @@ namespace Icejson
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 namespace Icejson
 {
-   struct Writer_t
-   {
-      Writer_t();
-
-      string obj_bgn;
-      string obj_end;
-      string obj_dlm;
-
-      string arr_bgn;
-      string arr_end;
-      string arr_dlm;
-
-      string name_bgn;
-      string name_end;
-
-      string each_pad;
-      string last_pad;
-
-      string int_format;
-      string str_format;
-      string char_format;
-      string float_format;
-   };
-
    Writer_t::Writer_t() 
    {
-      obj_bgn = "{";
-      obj_end = "}";
-      obj_dlm = ",";
-
-      arr_bgn = "[";
-      arr_end = "]";
-      arr_dlm = ", ";
-
-      name_bgn = "\"";
-      name_end = "\" : ";
-
-      each_pad = "\n";
-      last_pad = "\n";
-
       int_format = "%d";
       str_format = "\"%s\"";
       char_format = "'%c'";
@@ -523,17 +485,14 @@ namespace Icejson
    int Node_t::write(FILE *fh, const char *pad, int level)
    {
       int len = 0;
-      Writer_t wrt;
       Node_t *itr = NULL;
+      Writer_t &wrt = pdoc->writer;;
+
+      for(int I = 0; I < level; I++)
+         len += fprintf(fh, "%s", pad);
 
       if(not name.empty())
-      {
-         len += fprintf(fh, "%s", wrt.each_pad.data());
-         for(int I = 0; I < level; I++)
-            len += fprintf(fh, "%s", pad);
-         len += fprintf(fh, "%s%s%s", wrt.name_bgn.data(), 
-               name.data(), wrt.name_end.data());
-      }
+         len += fprintf(fh, "\"%s\" : ", name.data());
 
       switch(vtype)
       {
@@ -546,31 +505,38 @@ namespace Icejson
          case Valtype::String : len += fprintf(fh, wrt.str_format.data(), vstr.data()); 
                                 break;
 
-         case Valtype::Array : len += fprintf(fh, "%s", wrt.arr_bgn.data());
-                               if(vobj) for(itr = vobj; ; )
+         case Valtype::Array : len += fprintf(fh, "[");
+                               if(vobj)
                                {
-                                  len += itr->write(fh, pad, level + 1);
-                                  itr  = itr->pnext;
-                                  if(itr) len += fprintf(fh, "%s", wrt.arr_dlm.data());
-                                  else break;
+                                  fprintf(fh, "\n");
+                                  for(itr = vobj; ; )
+                                  {
+                                     len += itr->write(fh, pad, level + 1);
+                                     itr  = itr->pnext;
+                                     if(itr) len += fprintf(fh, ",\n");
+                                     else { len += fprintf(fh, "\n"); break; }
+                                  }
+                                  for(int I = 0; I < level; I++)
+                                     len += fprintf(fh, "%s", pad);
                                }
-                               len += fprintf(fh, "%s", wrt.arr_end.data());
+                               len += fprintf(fh, "]");
                                break;
 
-         case Valtype::Object : len += fprintf(fh, "%s", wrt.obj_bgn.data());
+         case Valtype::Object : len += fprintf(fh, "{");
                                 if(vobj)
                                 {
+                                   fprintf(fh, "\n");
                                    for(itr = vobj; ; )
                                    {
                                       len += itr->write(fh, pad, level + 1);
                                       itr = itr->pnext;
-                                      if(itr) len += fprintf(fh, "%s", wrt.obj_dlm.data());
-                                      else { len += fprintf(fh, "%s", wrt.last_pad.data()); break; }
+                                      if(itr) len += fprintf(fh, ",\n");
+                                      else { len += fprintf(fh, "\n"); break; }
                                    }
                                    for(int I = 0; I < level; I++)
                                       len += fprintf(fh, "%s", pad);
                                 }
-                                len += fprintf(fh, "%s", wrt.obj_end.data());
+                                len += fprintf(fh, "}");
                                 break;
 
          case Valtype::Null : len += fprintf(fh, "null"); break;

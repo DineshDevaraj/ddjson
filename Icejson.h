@@ -51,11 +51,21 @@ namespace Icejson
       string desc;
    };
 
+   struct Writer_t
+   {
+      Writer_t();
+      string int_format;
+      string str_format;
+      string char_format;
+      string float_format;
+   };
+
    struct Doc_t
    {
       Doc_t();
 
       Error_t error;
+      Writer_t writer;
 
       Node_t & root();
 
