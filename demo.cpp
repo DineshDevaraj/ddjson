@@ -58,9 +58,9 @@ int main()
          printf("Unable to open file %s\n", file);
          break;
       }
-      fread(json_str, sizeof(char), sizeof json_str, fh);
+      //fread(json_str, sizeof(char), sizeof json_str, fh);
 
-      Node_t &root = oJson.parse_string(json_str);
+      Node_t &root = oJson.parse_file(file);
       if(!root)
       {
          printf("%s at or before colum %d in line %d\n",
@@ -71,7 +71,8 @@ int main()
 
       //PrintJson(root);
 
-      root.write(stderr, "   ");
+      printf("root : ");
+      root.write(stdout, "   ");
       printf("\n");
 
       fclose(fh);

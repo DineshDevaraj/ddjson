@@ -13,6 +13,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <sys/stat.h>
 
 #include "Icejson.h"
 
@@ -443,6 +444,27 @@ namespace Icejson
       }
 
       return oInvalid;
+   }
+
+   Node_t & Doc_t::parse_file(FILE *fh)
+   {
+      struct stat st;
+      char *json_str = NULL;
+      fstat(fileno(fh), &st);
+      json_str = new char [st.st_size];
+      fread(json_str, sizeof(char), st.st_size, fh);
+      Node_t &root = parse_string(json_str);
+      delete [] json_str;
+      return root;
+   }
+
+   Node_t & Doc_t::parse_file(const char *file_path)
+   {
+      FILE *fh = fopen(file_path, "r");
+      if(NULL == fh) return oInvalid;
+      Node_t &ret = parse_file(fh);
+      fclose(fh);
+      return ret;
    }
 }
 
