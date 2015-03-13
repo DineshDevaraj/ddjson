@@ -49,7 +49,7 @@ int main()
    Doc_t oJson;
    char file[256] = {};
 
-   for(int I = 1; I < 20; I++)
+   for(int I = 1; I < 2; I++)
    {
       sprintf(file, "Samples/Sample%d.json", I);
       FILE *fh = fopen(file, "r");
@@ -58,7 +58,6 @@ int main()
          printf("Unable to open file %s\n", file);
          break;
       }
-      //fread(json_str, sizeof(char), sizeof json_str, fh);
 
       Node_t &root = oJson.parse_file(file);
       if(!root)
@@ -69,11 +68,8 @@ int main()
          break;
       }
 
-      //PrintJson(root);
-
-      printf("root : ");
-      root.write(stdout, "   ");
-      printf("\n");
+      root.write(json_str, "   ");
+      puts(json_str);
 
       fclose(fh);
    }

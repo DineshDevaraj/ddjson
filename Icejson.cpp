@@ -13,7 +13,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+
 #include <sys/stat.h>
+#include <sys/varargs.h>
 
 #include "Icejson.h"
 
@@ -414,6 +416,12 @@ namespace Icejson
    struct Helper_t
    {
       static void free_node(Node_t * &pnode);
+
+      template <typename tn>
+      static int print(tn * &ptr, const char *fmt, ...);
+
+      template <typename tn>
+      static int write(tn * &ptr, Node_t *pn, const char *pad = "\0", int lev = 0);
    };
 
    void Helper_t::free_node(Node_t * &pnode)
@@ -437,6 +445,88 @@ namespace Icejson
       pnode = NULL;
 
       return;
+   }
+
+   template <> int Helper_t::print(FILE * &fh, const char *fmt, ...)
+   {
+      va_list args;
+      va_start(args, fmt);
+      return vfprintf(fh, fmt, args);
+   }
+   
+   template <> int Helper_t::print(char * &cp, const char *fmt, ...)
+   {
+      va_list args;
+      va_start(args, fmt);
+      int len = vsprintf(cp, fmt, args);
+      cp += len;
+      return len;
+   }
+
+   template <typename tn> /* pn - pointer to node */
+   int Helper_t::write(tn * &ptr, Node_t *pn, const char *pad, int lev)
+   {
+      int len = 0;
+      Node_t *itr = NULL;
+      Writer_t &wrt = pn->pdoc->writer;;
+
+      for(int I = 0; I < lev; I++)
+         len += print(ptr, "%s", pad);
+
+      if(not pn->name.empty())
+         len += print(ptr, "\"%s\" : ", pn->name.data());
+
+      switch(pn->vtype)
+      {
+         case Valtype::Int : len += print(ptr, wrt.int_format.data(), pn->vint); 
+                             break;
+         case Valtype::Char : len += print(ptr, wrt.char_format.data(), pn->vchar); 
+                              break;
+         case Valtype::Bool : len += print(ptr, "%s", pn->vbool ? "true" : "false");
+                              break;
+         case Valtype::Float : len += print(ptr, wrt.float_format.data(), pn->vreal); 
+                               break;
+         case Valtype::String : len += print(ptr, wrt.str_format.data(), pn->vstr.data()); 
+                                break;
+
+         case Valtype::Array : len += print(ptr, "[");
+                               if(pn->vobj)
+                               {
+                                  print(ptr, "\n");
+                                  for(itr = pn->vobj; ; )
+                                  {
+                                     len += write(ptr, itr, pad, lev + 1);
+                                     itr  = itr->pnext;
+                                     if(itr) len += print(ptr, ",\n");
+                                     else { len += print(ptr, "\n"); break; }
+                                  }
+                                  for(int I = 0; I < lev; I++)
+                                     len += print(ptr, "%s", pad);
+                               }
+                               len += print(ptr, "]");
+                               break;
+
+         case Valtype::Object : len += print(ptr, "{");
+                                if(pn->vobj)
+                                {
+                                   print(ptr, "\n");
+                                   for(itr = pn->vobj; ; )
+                                   {
+                                      len += write(ptr, itr, pad, lev + 1);
+                                      itr = itr->pnext;
+                                      if(itr) len += print(ptr, ",\n");
+                                      else { len += print(ptr, "\n"); break; }
+                                   }
+                                   for(int I = 0; I < lev; I++)
+                                      len += print(ptr, "%s", pad);
+                                }
+                                len += print(ptr, "}");
+                                break;
+
+         case Valtype::Null : len += print(ptr, "null"); break;
+      }
+
+      return len;
    }
 }
 
@@ -521,67 +611,14 @@ namespace Icejson
       float_format = "%f";
    }
 
-   int Node_t::write(FILE *fh, const char *pad, int level)
+   int Node_t::write(FILE *fh, const char *pad)
    {
-      int len = 0;
-      Node_t *itr = NULL;
-      Writer_t &wrt = pdoc->writer;;
-
-      for(int I = 0; I < level; I++)
-         len += fprintf(fh, "%s", pad);
-
-      if(not name.empty())
-         len += fprintf(fh, "\"%s\" : ", name.data());
-
-      switch(vtype)
-      {
-         case Valtype::Int : len += fprintf(fh, wrt.int_format.data(), vint); 
-                             break;
-         case Valtype::Char : len += fprintf(fh, wrt.char_format.data(), vchar); 
-                              break;
-         case Valtype::Float : len += fprintf(fh, wrt.float_format.data(), vreal); 
-                               break;
-         case Valtype::String : len += fprintf(fh, wrt.str_format.data(), vstr.data()); 
-                                break;
-
-         case Valtype::Array : len += fprintf(fh, "[");
-                               if(vobj)
-                               {
-                                  fprintf(fh, "\n");
-                                  for(itr = vobj; ; )
-                                  {
-                                     len += itr->write(fh, pad, level + 1);
-                                     itr  = itr->pnext;
-                                     if(itr) len += fprintf(fh, ",\n");
-                                     else { len += fprintf(fh, "\n"); break; }
-                                  }
-                                  for(int I = 0; I < level; I++)
-                                     len += fprintf(fh, "%s", pad);
-                               }
-                               len += fprintf(fh, "]");
-                               break;
-
-         case Valtype::Object : len += fprintf(fh, "{");
-                                if(vobj)
-                                {
-                                   fprintf(fh, "\n");
-                                   for(itr = vobj; ; )
-                                   {
-                                      len += itr->write(fh, pad, level + 1);
-                                      itr = itr->pnext;
-                                      if(itr) len += fprintf(fh, ",\n");
-                                      else { len += fprintf(fh, "\n"); break; }
-                                   }
-                                   for(int I = 0; I < level; I++)
-                                      len += fprintf(fh, "%s", pad);
-                                }
-                                len += fprintf(fh, "}");
-                                break;
-
-         case Valtype::Null : len += fprintf(fh, "null"); break;
-      }
-
-      return len;
+      return Helper_t::write(fh, this, pad);
+   }
+   
+   int Node_t::write(char *str, const char *pad)
+   {
+      return Helper_t::write(str, this, pad);
    }
 }
 

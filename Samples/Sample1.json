@@ -16,5 +16,7 @@
       "username" : "Dinesh",
       "password" : ["#Ind[47]", { "object" : "in array", "second" : "in array" }, 56.43],
       "county" : "India"
-   }
+   },
+   "boolt" : true,
+   "boolf" : false
 }
