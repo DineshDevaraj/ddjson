@@ -32,7 +32,6 @@ namespace Icejson
       {
          Int      = 'I',
          Float    = 'F',
-         Char     = 'C',
          String   = 'S',
          Bool     = 'B',
          Null     = 'N',
@@ -57,7 +56,6 @@ namespace Icejson
       Writer_t();
       string int_format;
       string str_format;
-      string char_format;
       string float_format;
    };
 

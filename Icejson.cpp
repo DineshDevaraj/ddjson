@@ -481,41 +481,50 @@ namespace Icejson
    template <typename tn> /* pn - pointer to node */
    int Helper_t::write(tn * &ptr, Node_t *pn, const char *pad, int lev)
    {
+      string fmt;
       int len = 0;
       Node_t *itr = NULL;
-      Writer_t &wrt = pn->pdoc->writer;;
+      Writer_t &wrt = pn->pdoc->writer;
 
-      for(int I = 0; I < lev; I++)
+      if(pad) for(int I = 0; I < lev; I++)
          len += print(ptr, "%s", pad);
 
       if(not pn->name.empty())
-         len += print(ptr, "\"%s\" : ", pn->name.data());
+      {
+         len += print(ptr, "\"%s\"", pn->name.data());
+         if(pad) print(ptr, " : ");
+         else print(ptr, ":");
+      }
 
       switch(pn->vtype)
       {
          case Valtype::Int : len += print(ptr, wrt.int_format.data(), pn->vint); 
                              break;
-         case Valtype::Char : len += print(ptr, wrt.char_format.data(), pn->vchar); 
+
+        case Valtype::Bool : len += print(ptr, "%s", pn->vbool ? "true" : "false");
                               break;
-         case Valtype::Bool : len += print(ptr, "%s", pn->vbool ? "true" : "false");
-                              break;
+
          case Valtype::Float : len += print(ptr, wrt.float_format.data(), pn->vreal); 
                                break;
-         case Valtype::String : len += print(ptr, wrt.str_format.data(), pn->vstr.data()); 
+
+         case Valtype::String :fmt  = '"'; 
+                               fmt += wrt.str_format.data();
+                               fmt += '"';
+                               len += print(ptr, fmt.data(), pn->vstr.data()); 
                                 break;
 
          case Valtype::Array : len += print(ptr, "[");
                                if(pn->vobj)
                                {
-                                  print(ptr, "\n");
-                                  for(itr = pn->vobj; ; )
+                                  if(pad) print(ptr, "\n");
+                                  for(itr = pn->vobj; itr; )
                                   {
                                      len += write(ptr, itr, pad, lev + 1);
                                      itr  = itr->pnext;
-                                     if(itr) len += print(ptr, ",\n");
-                                     else { len += print(ptr, "\n"); break; }
+                                     if(itr) len += print(ptr, ",");
+                                     if(pad) len += print(ptr, "\n");
                                   }
-                                  for(int I = 0; I < lev; I++)
+                                  if(pad) for(int I = 0; I < lev; I++)
                                      len += print(ptr, "%s", pad);
                                }
                                len += print(ptr, "]");
@@ -524,15 +533,15 @@ namespace Icejson
          case Valtype::Object : len += print(ptr, "{");
                                 if(pn->vobj)
                                 {
-                                   print(ptr, "\n");
-                                   for(itr = pn->vobj; ; )
+                                   if(pad) print(ptr, "\n");
+                                   for(itr = pn->vobj; itr; )
                                    {
                                       len += write(ptr, itr, pad, lev + 1);
                                       itr = itr->pnext;
-                                      if(itr) len += print(ptr, ",\n");
-                                      else { len += print(ptr, "\n"); break; }
+                                      if(itr) len += print(ptr, ",");
+                                      if(pad) len += print(ptr, "\n");
                                    }
-                                   for(int I = 0; I < lev; I++)
+                                   if(pad) for(int I = 0; I < lev; I++)
                                       len += print(ptr, "%s", pad);
                                 }
                                 len += print(ptr, "}");
@@ -621,8 +630,7 @@ namespace Icejson
    Writer_t::Writer_t() 
    {
       int_format = "%d";
-      str_format = "\"%s\"";
-      char_format = "'%c'";
+      str_format = "%s";
       float_format = "%f";
    }
 

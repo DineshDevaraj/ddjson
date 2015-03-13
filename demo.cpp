@@ -27,8 +27,6 @@ void PrintJson(Node_t &node)
       {
          case Valtype::Int    : cerr << (int)ref << endl;
                                 break;
-         case Valtype::Char   : cerr << (char)ref << endl;
-                                break;
          case Valtype::Float  : cerr << (float)ref << endl;
                                 break;
          case Valtype::String : cerr << (string)ref << endl;
@@ -68,8 +66,8 @@ int main()
          break;
       }
 
-      root.write();
-      printf("\n");
+      root.write(json_str, 0);
+      printf("%s\n", json_str);
 
       fclose(fh);
    }
