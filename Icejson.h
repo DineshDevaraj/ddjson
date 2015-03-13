@@ -144,9 +144,9 @@ namespace Icejson
       Iterator_t back() const;
       Iterator_t front() const;
       
-      int write(FILE *fh, const char *pad = "\0");
-      int write(char *fh, const char *pad = "\0");
-      int write(ostream &os = cout, const char *pad = "\0", int lev = 0);
+      int write(FILE *fh, const char *pad = "   ");
+      int write(char *fh, const char *pad = "   ");
+      int write(ostream &os = cout, const char *pad = "   ");
 
       friend struct Helper_t;
       friend struct Parser_t;

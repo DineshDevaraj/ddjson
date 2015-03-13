@@ -68,8 +68,8 @@ int main()
          break;
       }
 
-      root.write(json_str, "   ");
-      puts(json_str);
+      root.write();
+      printf("\n");
 
       fclose(fh);
    }

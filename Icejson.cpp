@@ -463,6 +463,21 @@ namespace Icejson
       return len;
    }
 
+   template <> int Helper_t::print(ostream * &os, const char *fmt, ...)
+   {
+      va_list args;
+      va_start(args, fmt);
+      int len = vsnprintf(0, 0, fmt, args);
+      if(len > 0)
+      {
+         string str;
+         str.resize(len);
+         vsprintf(&str[0], fmt, args);
+         (*os) << str;
+      }
+      return len;
+   }
+
    template <typename tn> /* pn - pointer to node */
    int Helper_t::write(tn * &ptr, Node_t *pn, const char *pad, int lev)
    {
@@ -619,6 +634,12 @@ namespace Icejson
    int Node_t::write(char *str, const char *pad)
    {
       return Helper_t::write(str, this, pad);
+   }
+
+   int Node_t::write(ostream &os, const char *pad)
+   {
+      ostream *pos = &os;
+      return Helper_t::write(pos, this, pad);
    }
 }
 
