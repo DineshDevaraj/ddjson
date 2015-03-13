@@ -409,6 +409,38 @@ namespace Icejson
 }
 
 
+namespace Icejson
+{
+   struct Helper_t
+   {
+      static void free_node(Node_t * &pnode);
+   };
+
+   void Helper_t::free_node(Node_t * &pnode)
+   {
+      if(NULL == pnode)
+         return;
+
+      if(Valtype::Array == pnode->vtype or
+            Valtype::Object == pnode->vtype)
+      {
+         Node_t *cur = NULL;
+         Node_t *next = NULL;
+         for(cur = pnode->vobj; cur; cur = next)
+         {
+            next = cur->pnext;
+            free_node(cur);
+         }
+      }
+                                
+      delete pnode;
+      pnode = NULL;
+
+      return;
+   }
+}
+
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |        Document related implementations starts      |
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -431,9 +463,9 @@ namespace Icejson
             trw_err("Expected object at start");
 
          pp = new Parser_t(this, Valtype::Object);
-         pp->ParseObject(lex);
+         proot = pp; pp->ParseObject(lex);
 
-         return *pp;
+         return *proot;
       }
       catch(Exception exc)
       {
@@ -441,6 +473,7 @@ namespace Icejson
          error.line = lex.line;
          error.colum = lex.cur_pos - lex.line_bgn + 1;
          error.offset = lex.cur_pos - lex.json_str + 1;
+         Helper_t::free_node(proot);
       }
 
       return oInvalid;
@@ -462,9 +495,14 @@ namespace Icejson
    {
       FILE *fh = fopen(file_path, "r");
       if(NULL == fh) return oInvalid;
-      Node_t &ret = parse_file(fh);
+      Node_t &root = parse_file(fh);
       fclose(fh);
-      return ret;
+      return root;
+   }
+
+   Doc_t::~Doc_t()
+   {
+      Helper_t::free_node(proot);
    }
 }
 

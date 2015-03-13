@@ -19,6 +19,7 @@ namespace Icejson
 
    /* forward declarations */
    struct Doc_t;
+   struct Helper_t;
    struct Node_t;
    struct Error_t;
    struct Parser_t;
@@ -72,6 +73,8 @@ namespace Icejson
       Node_t & parse_file(FILE *);
       Node_t & parse_file(const char *);
       Node_t & parse_string(const char *);
+
+      ~Doc_t();
 
       private : Node_t *proot;
    };
@@ -140,12 +143,13 @@ namespace Icejson
 
       Iterator_t back() const;
       Iterator_t front() const;
-
-      friend struct Parser_t;
-      friend struct Iterator_t;
       
       int write(FILE *fh, const char *pad = "\0", int level = 0);
       int write(ostream &os = cout, const char *pad = "\0", int level = 0);
+
+      friend struct Helper_t;
+      friend struct Parser_t;
+      friend struct Iterator_t;
    };
 
    struct Iterator_t
