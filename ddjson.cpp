@@ -1,23 +1,13 @@
 
-/**
- *
- * Author  : D.Dinesh
- *           www.techybook.com
- *           dinesh@techybook.com
- *
- * Licence : Refer the license file
- *
- **/
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
 #include <sys/stat.h>
-#include <sys/varargs.h>
+#include <stdarg.h>
 
-#include "Icejson.h"
+#include "ddjson.h"
 
 #define OK   true
 #define ERR  false
@@ -250,7 +240,7 @@ Symbol Lexer_t::get_str(std::string &val)
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |        Parser related implementations starts      |
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-namespace Icejson
+namespace ddjson
 {
    #define oInvalid (*((Node_t *)0))
 
@@ -411,7 +401,7 @@ namespace Icejson
 }
 
 
-namespace Icejson
+namespace ddjson
 {
    struct Helper_t
    {
@@ -558,7 +548,7 @@ namespace Icejson
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |        Document related implementations starts      |
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-namespace Icejson
+namespace ddjson
 {
    Doc_t::Doc_t() {}
 
@@ -625,7 +615,7 @@ namespace Icejson
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |       Writer realted implementation            |
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-namespace Icejson
+namespace ddjson
 {
    Writer_t::Writer_t() 
    {
@@ -655,7 +645,7 @@ namespace Icejson
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |       Node related implementations starts      |
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-namespace Icejson
+namespace ddjson
 {
    Node_t::Node_t()    
    {
@@ -738,7 +728,7 @@ namespace Icejson
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
  |        Iterator related implementations starts      |
  `~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-namespace Icejson
+namespace ddjson
 {
    Iterator_t::Iterator_t() {}
 

@@ -1,21 +1,11 @@
 
-/**
- *
- * Author  : D.Dinesh
- *           www.techybook.com
- *           dinesh@techybook.com
- *
- * Licence : Refer the license file
- *
- **/
-
 #include <cstdio>
 #include <iostream>
 
-#include "Icejson.h"
+#include "ddjson.h"
 
 using namespace std;
-using namespace Icejson;
+using namespace ddjson;
 
 void PrintJson(Node_t &node)
 {
@@ -49,7 +39,7 @@ int main()
 
    for(int I = 1; I < 2; I++)
    {
-      sprintf(file, "Samples/Sample%d.json", I);
+      sprintf(file, "samples/sample%d.json", I);
       FILE *fh = fopen(file, "r");
       if(NULL == fh)
       {

@@ -1,19 +1,9 @@
 
-/**
- *
- * Author  : D.Dinesh
- *           www.techybook.com
- *           dinesh@techybook.com
- *
- * Licence : Refer the license file
- *
- **/
-
 #pragma once
 
 #include <iostream>
 
-namespace Icejson
+namespace ddjson
 {
    using namespace std;
 
