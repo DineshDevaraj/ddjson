@@ -37,7 +37,7 @@ int main()
    Doc_t oJson;
    char file[256] = {};
 
-   for(int I = 1; I < 2; I++)
+   for(int I = 1; I <= 6; I++)
    {
       sprintf(file, "samples/sample%d.json", I);
       FILE *fh = fopen(file, "r");
@@ -57,7 +57,7 @@ int main()
       }
 
       root.write(json_str, 0);
-      printf("%s\n", json_str);
+      printf("%s\n\n", json_str);
 
       fclose(fh);
    }

@@ -247,9 +247,10 @@ namespace ddjson
    #define NEXT_NEW_NODE(ptr) \
    ({ \
          Parser_t *swp = new Parser_t(pdoc); \
-         swp->pprev = pp; \
-         pp->pnext = pp = swp; \
-         pp->pparent = this; \
+         swp->pprev = ptr; \
+         ptr->pnext = swp; \
+         ptr->pparent = this; \
+         ptr = swp; \
     })
 
    struct Parser_t : public Node_t
@@ -380,7 +381,6 @@ namespace ddjson
          
          pcount++;
          lex.next();
-         pp->pparent = this;
          pp->ParseNode(lex, LEX_OBJECT_CLOSE);
          NEXT_NEW_NODE(pp);
       }
@@ -568,7 +568,7 @@ namespace ddjson
 
          pp = new Parser_t(this, Valtype::Object);
          pp->ParseObject(lex);
-         proot = pp; 
+         proot = pp;
 
          return *proot;
       }
