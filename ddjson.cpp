@@ -566,9 +566,9 @@ namespace ddjson
          if(LEX_OBJECT_OPEN != lex.cur_sym)
             trw_err("Expected object at start");
 
-         Helper_t::free_node(proot);
          pp = new Parser_t(this, Valtype::Object);
-         proot = pp; pp->ParseObject(lex);
+         pp->ParseObject(lex);
+         proot = pp; 
 
          return *proot;
       }
