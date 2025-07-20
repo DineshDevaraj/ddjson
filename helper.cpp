@@ -1,5 +1,7 @@
 
+#include <cstdio>
 #include <cstdarg>
+#include <ostream>
 
 #include "helper.h"
 #include "writer.h"
@@ -7,6 +9,10 @@
 
 namespace ddjson
 {
+   template int Helper_t::write<FILE>(FILE* &ptr, Node_t *pn, const char *pad, int lev);
+   template int Helper_t::write<char>(char* &ptr, Node_t *pn, const char *pad, int lev);
+   template int Helper_t::write<ostream>(ostream* &ptr, Node_t *pn, const char *pad, int lev);
+
    void Helper_t::free_node(Node_t * &pnode)
    {
       if(NULL == pnode)
