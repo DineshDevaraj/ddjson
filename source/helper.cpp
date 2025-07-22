@@ -65,7 +65,6 @@ namespace ddjson
    template <typename tn> /* tn - template name */
    int Helper_t::write(tn * &dst, Node_t *pnode, const char *pad, int lev)
    {
-      string fmt;
       int len = 0;
       Node_t *itr = NULL;
 
