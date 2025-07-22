@@ -22,6 +22,6 @@ namespace ddjson
       bool operator != (const Iterator_t &rhs);
       bool operator == (const Iterator_t &rhs);
 
-      private : Node_t *pcur;
+      private : Node_t *pcurr;
    };
 }

@@ -62,72 +62,72 @@ namespace ddjson
       return len;
    }
 
-   template <typename tn> /* pn - pointer to node */
-   int Helper_t::write(tn * &ptr, Node_t *pn, const char *pad, int lev)
+   template <typename tn> /* tn - template name */
+   int Helper_t::write(tn * &dst, Node_t *pNode, const char *pad, int lev)
    {
       string fmt;
       int len = 0;
       Node_t *itr = NULL;
 
       if(pad) for(int I = 0; I < lev; I++)
-         len += print(ptr, "%s", pad);
+         len += print(dst, "%s", pad);
 
-      if(not pn->name.empty())
+      if(not pNode->name.empty())
       {
-         len += print(ptr, "\"%s\"", pn->name.data());
-         if(pad) print(ptr, " : ");
-         else print(ptr, ":");
+         len += print(dst, "\"%s\"", pNode->name.data());
+         if(pad) print(dst, " : ");
+         else print(dst, ":");
       }
 
-      switch(pn->vtype)
+      switch(pNode->vtype)
       {
-         case Valtype::Int : len += print(ptr, "%d", pn->vint); 
+         case Valtype::Int : len += print(dst, "%d", pNode->vint); 
                              break;
 
-        case Valtype::Bool : len += print(ptr, "%s", pn->vbool ? "true" : "false");
+        case Valtype::Bool : len += print(dst, "%s", pNode->vbool ? "true" : "false");
                              break;
 
-         case Valtype::Float : len += print(ptr, "%f", pn->vreal); 
+         case Valtype::Float : len += print(dst, "%f", pNode->vreal); 
                                break;
 
-         case Valtype::String : len += print(ptr, "%s", pn->vstr.data()); 
+         case Valtype::String : len += print(dst, "%s", pNode->vstr.data()); 
                                 break;
 
-         case Valtype::Array : len += print(ptr, "[");
-                               if(pn->vobj)
+         case Valtype::Array : len += print(dst, "[");
+                               if(pNode->vobj)
                                {
-                                  if(pad) print(ptr, "\n");
-                                  for(itr = pn->vobj; itr; )
+                                  if(pad) print(dst, "\n");
+                                  for(itr = pNode->vobj; itr; )
                                   {
-                                     len += write(ptr, itr, pad, lev + 1);
+                                     len += write(dst, itr, pad, lev + 1);
                                      itr  = itr->pnext;
-                                     if(itr) len += print(ptr, ",");
-                                     if(pad) len += print(ptr, "\n");
+                                     if(itr) len += print(dst, ",");
+                                     if(pad) len += print(dst, "\n");
                                   }
                                   if(pad) for(int I = 0; I < lev; I++)
-                                     len += print(ptr, "%s", pad);
+                                     len += print(dst, "%s", pad);
                                }
-                               len += print(ptr, "]");
+                               len += print(dst, "]");
                                break;
 
-         case Valtype::Object : len += print(ptr, "{");
-                                if(pn->vobj)
+         case Valtype::Object : len += print(dst, "{");
+                                if(pNode->vobj)
                                 {
-                                   if(pad) print(ptr, "\n");
-                                   for(itr = pn->vobj; itr; )
+                                   if(pad) print(dst, "\n");
+                                   for(itr = pNode->vobj; itr; )
                                    {
-                                      len += write(ptr, itr, pad, lev + 1);
+                                      len += write(dst, itr, pad, lev + 1);
                                       itr = itr->pnext;
-                                      if(itr) len += print(ptr, ",");
-                                      if(pad) len += print(ptr, "\n");
+                                      if(itr) len += print(dst, ",");
+                                      if(pad) len += print(dst, "\n");
                                    }
                                    if(pad) for(int I = 0; I < lev; I++)
-                                      len += print(ptr, "%s", pad);
+                                      len += print(dst, "%s", pad);
                                 }
-                                len += print(ptr, "}");
+                                len += print(dst, "}");
                                 break;
 
-         case Valtype::Null : len += print(ptr, "null"); break;
+         case Valtype::Null : len += print(dst, "null"); break;
       }
 
       return len;

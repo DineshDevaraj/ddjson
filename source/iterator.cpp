@@ -6,51 +6,51 @@ namespace ddjson
    Iterator_t::Iterator_t() {}
 
    Iterator_t::Iterator_t(Node_t *node) :
-      pcur(node) {}
+      pcurr(node) {}
 
    Iterator_t::operator bool()
    {
-      return pcur;
+      return this->pcurr;
    }
 
    Node_t & Iterator_t::operator * ()
    {
-      return *pcur;
+      return *this->pcurr;
    }
    
    Iterator_t & Iterator_t::operator ++ ()
    {
-      pcur = pcur->pnext;
+      this->pcurr = this->pcurr->pnext;
       return *this;
    }
 
    Iterator_t & Iterator_t::operator -- ()
    {
-      pcur = pcur->pprev;
+      this->pcurr = this->pcurr->pprev;
       return *this;
    }
 
    Iterator_t Iterator_t::operator ++ (int)
    {
-      Iterator_t itr(pcur);
-      pcur = pcur->pnext;
+      Iterator_t itr(this->pcurr);
+      this->pcurr = this->pcurr->pnext;
       return itr;
    }
 
    Iterator_t Iterator_t::operator -- (int)
    {
-      Iterator_t itr(pcur);
-      pcur = pcur->pprev;
+      Iterator_t itr(this->pcurr);
+      this->pcurr = this->pcurr->pprev;
       return itr;
    }
 
    bool Iterator_t::operator == (const Iterator_t &rhs)
    {
-      return pcur == rhs.pcur;
+      return this->pcurr == rhs.pcurr;
    }
 
    bool Iterator_t::operator != (const Iterator_t &rhs)
    {
-      return pcur != rhs.pcur;
+      return this->pcurr != rhs.pcurr;
    }
 }
