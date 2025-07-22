@@ -86,7 +86,7 @@ namespace ddjson
          case Valtype::Float : len += print(dst, "%f", pnode->vreal); 
                                break;
 
-         case Valtype::String : len += print(dst, "%s", pnode->vstr.data()); 
+         case Valtype::String : len += print(dst, R"("%s")", pnode->vstr.data()); 
                                 break;
 
          case Valtype::Array : len += print(dst, "[");
