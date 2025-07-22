@@ -8,62 +8,32 @@ namespace ddjson
 {
    Node_t * Parser_t::ParseNode(Lexer_t &lex, Symbol node_close)
    {
-      Node_t *temp = nullptr;
-      Node_t *node = new Node_t();
+      Node_t *node = nullptr;
       
       switch(lex.cur_sym)
       {
          case LEX_NEG         : 
-         case LEX_INT         : const char *val;
-                                if(LEX_INT == lex.get_num(val))
-                                {
-                                    node->vint = atoi(val);
-                                    node->vtype = Valtype::Int;
-                                }
-                                else 
-                                {
-                                    node->vreal = atof(val);
-                                    node->vtype = Valtype::Float;
-                                }
-                                break;
-
-         case LEX_STRING      : lex.get_str(node->vstr);
-                                if(LEX_STRING != lex.cur_sym)
-                                {
-                                    trw_err("Unterminated string value");
-                                }
-                                else 
-                                { 
-                                    node->vtype = Valtype::String;
-                                    lex.next();
-                                    break; 
-                                }
-
-         case LEX_BOOL_TRUE   : node->vbool = true;
-                                node->vtype = Valtype::Bool;
-                                lex.next();
-                                break;
-         
-         case LEX_BOOL_FALSE  : node->vbool = false;
-                                node->vtype = Valtype::Bool;
-                                lex.next();
-                                break;
-
-         case LEX_NULL        : node->vtype = Valtype::Null;
-                                lex.next();
-                                break;
-
-         case LEX_ARRAY_OPEN  : temp = this->ParseArray(lex);
-                                node->vtype = Valtype::Array;
-                                node->varr = temp;
-                                lex.next(); /* move past array close symbol */
-                                break;
-
-         case LEX_OBJECT_OPEN : temp = this->ParseObject(lex);
-                                node->vtype = Valtype::Object;
-                                node->vobj = temp;
-                                lex.next(); /* move past object close symbol */
-                                break;
+         case LEX_INT         : 
+            node = this->ParseNumbers(lex);
+            break;
+         case LEX_STRING      : 
+            node = this->ParseString(lex);
+            break;
+         case LEX_BOOL_TRUE   : 
+            node = this->ParseBool(lex, true);
+            break;
+         case LEX_BOOL_FALSE  : 
+            node = this->ParseBool(lex, false);
+            break;
+         case LEX_NULL        : 
+            node = this->ParseNull(lex);
+            break;
+         case LEX_ARRAY_OPEN  : 
+            node = this->ParseArray(lex);
+            break;
+         case LEX_OBJECT_OPEN : 
+            node = this->ParseObject(lex);
+            break;
 
          default : trw_err("Expected number, char, string, array or object");
       }
@@ -75,18 +45,57 @@ namespace ddjson
       return node;
    }
 
+   Node_t * Parser_t::ParseNumbers(Lexer_t &lex)
+   {
+      const char *val;
+      Node_t *node = new Node_t();
+
+      if(LEX_INT == lex.get_num(val))
+      {
+         node->vtype = Valtype::Int;
+         node->vint = atoi(val);
+      }
+      else 
+      {
+         node->vtype = Valtype::Float;
+         node->vreal = atof(val);
+      }
+
+      return node;
+   }
+
+   Node_t * Parser_t::ParseString(Lexer_t &lex)
+   {
+      Node_t *node = new Node_t(Valtype::String);
+      lex.get_str(node->vstr);
+      if(LEX_STRING != lex.cur_sym)
+         trw_err("Unterminated string value");
+      lex.next();
+      return node;
+   }
+
+   Node_t * Parser_t::ParseBool(Lexer_t &lex, bool val)
+   {
+      Node_t *node = new Node_t(Valtype::Bool);
+      node->vbool = val;
+      lex.next();
+      return node;
+   }
+
+   Node_t * Parser_t::ParseNull(Lexer_t &lex)
+   {
+      Node_t *node = new Node_t(Valtype::Null);
+      lex.next();
+      return node;
+   }
+
    Node_t * Parser_t::ParseArray(Lexer_t &lex)
    {
-      Node_t *node = new Node_t();
-      node->vtype = Valtype::Array;
+      Node_t *node = new Node_t(Valtype::Array);
 
       /* handle empty array */
       if(LEX_ARRAY_CLOSE == lex.next())
-      {         
-         node->vlast = NULL;
-         node->varr = NULL;
          return node;
-      }
 
       Node_t *curr = nullptr;
       while(LEX_ARRAY_CLOSE != lex.cur_sym)
@@ -97,6 +106,8 @@ namespace ddjson
       }
 
       node->vlast = curr;
+      /* move past array close symbol */
+      lex.next(); 
 
       return node;
    }
@@ -131,6 +142,8 @@ namespace ddjson
       }
 
       node->vlast = curr;
+      /* move past object close symbol */
+      lex.next(); 
 
       return node;
    }

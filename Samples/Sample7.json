@@ -1,3 +1,13 @@
 {
-   "int" : 93
+   "int" : 93,
+   "float" : 3.14,
+   "bool_true" : true,
+   "bool_false" : false,
+   "null" : null,
+   "string" : "Sample7",
+   "nested_object" : {
+      "int" : 42,
+      "float" : 2.71,
+      "string" : "NestedSample7"
+   }
 }

@@ -7,29 +7,30 @@ namespace ddjson
 {
    Node_t::Node_t()    
    {
-      pdoc = nullptr;
-      vobj = nullptr;
+      this->pdoc = nullptr;
+      this->vobj = nullptr;
+      this->vlast = nullptr;
 
-      proot = nullptr;
-      pnext = nullptr;
-      pprev = nullptr;
-      pparent = nullptr;
-   
-      child_count = 0;
+      this->child_count = 0;
 
-      vtype = Valtype::Invalid;
+      this->proot = nullptr;
+      this->pnext = nullptr;
+      this->pprev = nullptr;
+      this->pparent = nullptr;
+
+      this->vtype = Valtype::Invalid;
    }
 
    Node_t::Node_t(Valtype_t type) : Node_t()
    {
-      vtype = type;
+      this->vtype = type;
    }
 
    Doc_t & Node_t::doc() const { return *this->pdoc; }
 
-   Valtype_t Node_t::value_type() const { return vtype; }
+   int Node_t::count() const { return this->child_count; }
 
    bool Node_t::valid() const { return this != &oInvalid; }
 
-   int Node_t::count() const { return this->child_count; }
+   Valtype_t Node_t::value_type() const { return this->vtype; }
 }
