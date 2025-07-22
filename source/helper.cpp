@@ -63,7 +63,7 @@ namespace ddjson
    }
 
    template <typename tn> /* tn - template name */
-   int Helper_t::write(tn * &dst, Node_t *pNode, const char *pad, int lev)
+   int Helper_t::write(tn * &dst, Node_t *pnode, const char *pad, int lev)
    {
       string fmt;
       int len = 0;
@@ -72,32 +72,32 @@ namespace ddjson
       if(pad) for(int I = 0; I < lev; I++)
          len += print(dst, "%s", pad);
 
-      if(not pNode->name.empty())
+      if(not pnode->name.empty())
       {
-         len += print(dst, "\"%s\"", pNode->name.data());
+         len += print(dst, "\"%s\"", pnode->name.data());
          if(pad) print(dst, " : ");
          else print(dst, ":");
       }
 
-      switch(pNode->vtype)
+      switch(pnode->vtype)
       {
-         case Valtype::Int : len += print(dst, "%d", pNode->vint); 
+         case Valtype::Int : len += print(dst, "%d", pnode->vint); 
                              break;
 
-        case Valtype::Bool : len += print(dst, "%s", pNode->vbool ? "true" : "false");
+        case Valtype::Bool : len += print(dst, "%s", pnode->vbool ? "true" : "false");
                              break;
 
-         case Valtype::Float : len += print(dst, "%f", pNode->vreal); 
+         case Valtype::Float : len += print(dst, "%f", pnode->vreal); 
                                break;
 
-         case Valtype::String : len += print(dst, "%s", pNode->vstr.data()); 
+         case Valtype::String : len += print(dst, "%s", pnode->vstr.data()); 
                                 break;
 
          case Valtype::Array : len += print(dst, "[");
-                               if(pNode->vobj)
+                               if(pnode->vobj)
                                {
                                   if(pad) print(dst, "\n");
-                                  for(itr = pNode->vobj; itr; )
+                                  for(itr = pnode->vobj; itr; )
                                   {
                                      len += write(dst, itr, pad, lev + 1);
                                      itr  = itr->pnext;
@@ -111,10 +111,10 @@ namespace ddjson
                                break;
 
          case Valtype::Object : len += print(dst, "{");
-                                if(pNode->vobj)
+                                if(pnode->vobj)
                                 {
                                    if(pad) print(dst, "\n");
-                                   for(itr = pNode->vobj; itr; )
+                                   for(itr = pnode->vobj; itr; )
                                    {
                                       len += write(dst, itr, pad, lev + 1);
                                       itr = itr->pnext;
