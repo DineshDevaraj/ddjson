@@ -93,21 +93,25 @@ namespace ddjson
    {
       Node_t *node = new Node_t(Valtype::Array);
 
+      /* move past the array open symbol */
+      lex.next();
+
       /* handle empty array */
-      if(LEX_ARRAY_CLOSE == lex.next())
+      if(LEX_ARRAY_CLOSE == lex.cur_sym)
          return node;
 
-      Node_t *curr = nullptr;
-      while(LEX_ARRAY_CLOSE != lex.cur_sym)
+      Node_t *curr;
+      for(curr = nullptr; ; lex.next())
       {
          Node_t *temp = this->ParseNode(lex, LEX_ARRAY_CLOSE);
          NEXT_NEW_NODE(node, curr);
-         lex.next();
+         if(LEX_ARRAY_CLOSE == lex.cur_sym)
+            break;
       }
 
       node->vlast = curr;
       /* move past array close symbol */
-      lex.next(); 
+      lex.next();
 
       return node;
    }

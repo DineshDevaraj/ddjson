@@ -5,6 +5,7 @@
    "bool_false" : false,
    "null" : null,
    "string" : "Sample7",
+   "array" : [1, 2, 3, 4, 5],
    "nested_object" : {
       "int" : 42,
       "float" : 2.71,
