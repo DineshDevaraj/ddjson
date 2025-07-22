@@ -6,5 +6,4 @@
 #include "lexer.h"
 #include "parser.h"
 #include "helper.h"
-#include "writer.h"
 #include "iterator.h"

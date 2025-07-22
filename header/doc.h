@@ -2,7 +2,6 @@
 #pragma once
 
 #include "forward_declarations.h"
-#include "writer.h"
 #include "node.h"
 
 namespace ddjson
@@ -12,7 +11,6 @@ namespace ddjson
       Doc_t();
 
       Error_t error;
-      Writer_t writer;
 
       Node_t & root();
 

@@ -4,8 +4,8 @@ CXXFLAGS := -g -Wall -Wextra
 
 all: demo
 
-demo: *.cpp *.h
-	$(CXX) $(CXXFLAGS) -o demo *.cpp
+demo: demo.cpp source/*.cpp source/*/*.cpp header/*.h
+	$(CXX) $(CXXFLAGS) -Iheader -o demo demo.cpp source/*.cpp source/*/*.cpp
 
 clean:
-	rm -f demo
+	rm -f *.exe *.gch

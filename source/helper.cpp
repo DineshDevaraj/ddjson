@@ -4,7 +4,6 @@
 #include <ostream>
 
 #include "helper.h"
-#include "writer.h"
 #include "doc.h"
 
 namespace ddjson
@@ -15,23 +14,19 @@ namespace ddjson
 
    void Helper_t::free_node(Node_t * &pnode)
    {
-      if(NULL == pnode)
+      if(nullptr == pnode)
          return;
 
       if(Valtype::Array == pnode->vtype or
             Valtype::Object == pnode->vtype)
       {
-         Node_t *cur = NULL;
-         Node_t *next = NULL;
-         for(cur = pnode->vobj; cur; cur = next)
-         {
-            next = cur->pnext;
-            free_node(cur);
-         }
+         Node_t *curr = pnode->vobj;
+         for( ; curr; curr = curr->pnext)
+            Helper_t::free_node(curr);
       }
                                 
       delete pnode;
-      pnode = NULL;
+      pnode = nullptr;
 
       return;
    }
@@ -73,7 +68,6 @@ namespace ddjson
       string fmt;
       int len = 0;
       Node_t *itr = NULL;
-      Writer_t &wrt = pn->pdoc->writer;
 
       if(pad) for(int I = 0; I < lev; I++)
          len += print(ptr, "%s", pad);
@@ -87,19 +81,16 @@ namespace ddjson
 
       switch(pn->vtype)
       {
-         case Valtype::Int : len += print(ptr, wrt.int_format.data(), pn->vint); 
+         case Valtype::Int : len += print(ptr, "%d", pn->vint); 
                              break;
 
         case Valtype::Bool : len += print(ptr, "%s", pn->vbool ? "true" : "false");
-                              break;
+                             break;
 
-         case Valtype::Float : len += print(ptr, wrt.float_format.data(), pn->vreal); 
+         case Valtype::Float : len += print(ptr, "%f", pn->vreal); 
                                break;
 
-         case Valtype::String :fmt  = '"'; 
-                               fmt += wrt.str_format.data();
-                               fmt += '"';
-                               len += print(ptr, fmt.data(), pn->vstr.data()); 
+         case Valtype::String : len += print(ptr, "%s", pn->vstr.data()); 
                                 break;
 
          case Valtype::Array : len += print(ptr, "[");

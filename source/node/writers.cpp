@@ -1,22 +1,10 @@
 
-#include <iostream>
-
 #include "node.h"
-#include "writer.h"
 #include "helper.h"
 
 namespace ddjson
 {
-   using namespace std;
-
-   Writer_t::Writer_t() 
-   {
-      int_format = "%d";
-      str_format = "%s";
-      float_format = "%f";
-   }
-
-   int Node_t::write(FILE *fh, const char *pad)
+    int Node_t::write(FILE *fh, const char *pad)
    {
       return Helper_t::write(fh, this, pad);
    }

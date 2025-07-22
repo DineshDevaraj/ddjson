@@ -11,9 +11,13 @@
 
 namespace ddjson
 {
-   Doc_t::Doc_t() {}
+   Doc_t::Doc_t() {
+      this->proot = nullptr;
+   }
 
-   Node_t & Doc_t::root() { return *proot; }
+   Node_t & Doc_t::root() { 
+      return *this->proot; 
+   }
 
    Node_t & Doc_t::parse_string(const char *json_arg)
    {
