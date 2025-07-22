@@ -71,9 +71,10 @@ namespace ddjson
 
    struct Node_t : private MembersMixin_t
    {
-      Node_t();
-
       string name;
+
+      Node_t();
+      Node_t(Valtype_t type);
 
       Doc_t & doc() const;
       Node_t & root() const;

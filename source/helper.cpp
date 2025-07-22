@@ -12,7 +12,7 @@ namespace ddjson
    template int Helper_t::write<char>(char* &ptr, Node_t *pn, const char *pad, int lev);
    template int Helper_t::write<ostream>(ostream* &ptr, Node_t *pn, const char *pad, int lev);
 
-   void Helper_t::free_node(Node_t * &pnode)
+   void Helper_t::free_node(Node_t *pnode)
    {
       if(nullptr == pnode)
          return;
@@ -21,14 +21,11 @@ namespace ddjson
             Valtype::Object == pnode->vtype)
       {
          Node_t *curr = pnode->vobj;
-         for( ; curr; curr = curr->pnext)
+         for(curr; curr; curr = curr->pnext)
             Helper_t::free_node(curr);
       }
                                 
       delete pnode;
-      pnode = nullptr;
-
-      return;
    }
 
    template <> int Helper_t::print(FILE * &fh, const char *fmt, ...)

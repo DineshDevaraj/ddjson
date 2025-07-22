@@ -20,6 +20,11 @@ namespace ddjson
       vtype = Valtype::Invalid;
    }
 
+   Node_t::Node_t(Valtype_t type) : Node_t()
+   {
+      vtype = type;
+   }
+
    Doc_t & Node_t::doc() const { return *this->pdoc; }
 
    Valtype_t Node_t::value_type() const { return vtype; }

@@ -7,7 +7,7 @@ namespace ddjson
 {
    struct Helper_t
    {
-      static void free_node(Node_t * &pnode);
+      static void free_node(Node_t *pnode);
 
       template <typename tn>
       static int print(tn * &ptr, const char *fmt, ...);

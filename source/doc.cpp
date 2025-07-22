@@ -11,10 +11,6 @@
 
 namespace ddjson
 {
-   Doc_t::Doc_t() {
-      this->proot = nullptr;
-   }
-
    Node_t & Doc_t::root() { 
       return *this->proot; 
    }

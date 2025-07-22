@@ -103,8 +103,9 @@ namespace ddjson
 
    Node_t * Parser_t::ParseObject(Lexer_t &lex)
    {
+      string name;
       Node_t *curr = nullptr;
-      Node_t *node = new Node_t();
+      Node_t *node = new Node_t(Valtype::Object);
 
       while(LEX_OBJECT_CLOSE != lex.cur_sym)
       {
@@ -115,7 +116,7 @@ namespace ddjson
          if(LEX_STRING != lex.cur_sym)
             trw_err("Expected node name");
 
-         lex.get_str(node->name);
+         lex.get_str(name);
          if(LEX_STRING != lex.cur_sym)
             trw_err("Invalid node name");
 
@@ -124,6 +125,8 @@ namespace ddjson
          
          lex.next();
          Node_t *temp = this->ParseNode(lex, LEX_OBJECT_CLOSE);
+         temp->name = name;
+         
          NEXT_NEW_NODE(node, curr);
       }
 

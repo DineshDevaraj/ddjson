@@ -8,8 +8,6 @@ namespace ddjson
 {
    struct Doc_t
    {
-      Doc_t();
-
       Error_t error;
 
       Node_t & root();
