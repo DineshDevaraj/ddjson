@@ -10,13 +10,13 @@ namespace ddjson
    #define OK   true
    #define ERR  false
 
-   #define NEXT_NEW_NODE(curr) \
-   ({ \
-         Node_t swp = new Node_t(); \
-         swp.pprev = &curr; \
-         curr.pnext = &swp; \
-         curr.pparent = &this; \
-         curr = swp; \
+   #define NEXT_NEW_NODE(node, curr)            \
+   ({                                           \
+         temp->pprev = curr;                    \
+         if(curr == nullptr) node->vobj = temp; \
+         else curr->pnext = temp;               \
+         node->child_count++;                   \
+         curr = temp;                           \
     })
 
    struct Parser_t

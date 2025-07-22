@@ -7,8 +7,6 @@ namespace ddjson
 {
    Node_t::Node_t()    
    {
-      pcount = 0;
-
       pdoc = nullptr;
       vobj = nullptr;
 
@@ -16,6 +14,8 @@ namespace ddjson
       pnext = nullptr;
       pprev = nullptr;
       pparent = nullptr;
+   
+      child_count = 0;
 
       vtype = Valtype::Invalid;
    }
@@ -26,5 +26,5 @@ namespace ddjson
 
    bool Node_t::valid() const { return this != &oInvalid; }
 
-   int Node_t::count() const { return this->pcount; }
+   int Node_t::count() const { return this->child_count; }
 }

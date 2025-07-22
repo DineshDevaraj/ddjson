@@ -92,13 +92,7 @@ namespace ddjson
       while(LEX_ARRAY_CLOSE != lex.cur_sym)
       {
          Node_t *temp = this->ParseNode(lex, LEX_ARRAY_CLOSE);
-         if(curr == nullptr) {
-            node->vobj = temp;
-         } else {
-            curr->pnext = temp;
-         }
-         temp->pprev = curr;
-         curr = temp;
+         NEXT_NEW_NODE(node, curr);
          lex.next();
       }
 
@@ -130,27 +124,10 @@ namespace ddjson
          
          lex.next();
          Node_t *temp = this->ParseNode(lex, LEX_OBJECT_CLOSE);
-         temp->pprev = curr;
-         if(curr == nullptr)
-         {
-            node->vobj = temp;
-         }
-         else
-         {
-            curr->pnext = temp;
-         }
-         curr = temp;
+         NEXT_NEW_NODE(node, curr);
       }
 
-      if(curr == node) /* object is empty */
-      {
-         node->vlast = node->vobj = nullptr;
-      }
-      else
-      {
-         node->vlast = curr;
-         node->vlast->pnext = nullptr;
-      }
+      node->vlast = curr;
 
       return node;
    }

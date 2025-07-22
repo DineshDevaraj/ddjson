@@ -46,8 +46,9 @@ namespace ddjson
       Node_t *pprev;
       Node_t *pparent;
 
-      int pcount;
-      string vstr;
+      int child_count;
+
+      std::string vstr;
       Valtype_t vtype;
 
       union
