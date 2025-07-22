@@ -5,8 +5,8 @@ namespace ddjson
 {
    Iterator_t::Iterator_t() {}
 
-   Iterator_t::Iterator_t(Node_t *node) :
-      pcurr(node) {}
+   Iterator_t::Iterator_t(Node_t *pnode) :
+      pcurr(pnode) {}
 
    Iterator_t::operator bool()
    {
