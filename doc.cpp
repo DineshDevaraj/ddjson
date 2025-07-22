@@ -18,20 +18,15 @@ namespace ddjson
    Node_t & Doc_t::parse_string(const char *json_arg)
    {
       Lexer_t lex;
-      Parser_t *pp = NULL; /* pointer to parser */
+      Parser_t parser;
 
       try
       {
          lex.load_string(json_arg);
-
          if(LEX_OBJECT_OPEN != lex.cur_sym)
             trw_err("Expected object at start");
-
-         pp = new Parser_t(this, Valtype::Object);
-         pp->ParseObject(lex);
-         proot = pp;
-
-         return *proot;
+         this->proot = parser.ParseObject(lex);
+         return *this->proot;
       }
       catch(Exception exc)
       {
@@ -39,7 +34,6 @@ namespace ddjson
          error.line = lex.line;
          error.colum = lex.cur_pos - lex.line_bgn + 1;
          error.offset = lex.cur_pos - lex.json_str + 1;
-         Helper_t::free_node(proot);
       }
 
       return oInvalid;
@@ -52,22 +46,22 @@ namespace ddjson
       fstat(fileno(fh), &st);
       json_str = new char [st.st_size];
       fread(json_str, sizeof(char), st.st_size, fh);
-      Node_t &root = parse_string(json_str);
+      parse_string(json_str);
       delete [] json_str;
-      return root;
+      return *this->proot;
    }
 
    Node_t & Doc_t::parse_file(const char *file_path)
    {
       FILE *fh = fopen(file_path, "r");
       if(NULL == fh) return oInvalid;
-      Node_t &root = parse_file(fh);
+      parse_file(fh);
       fclose(fh);
-      return root;
+      return *this->proot;
    }
 
    Doc_t::~Doc_t()
    {
-      Helper_t::free_node(proot);
+      Helper_t::free_node(this->proot);
    }
 }

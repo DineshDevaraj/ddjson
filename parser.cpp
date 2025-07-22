@@ -6,57 +6,62 @@
 
 namespace ddjson
 {
-   bool Parser_t::ParseNode(Lexer_t &lex, Symbol node_close)
+   Node_t * Parser_t::ParseNode(Lexer_t &lex, Symbol node_close)
    {
+      Node_t *temp = nullptr;
+      Node_t *node = new Node_t();
+      
       switch(lex.cur_sym)
       {
          case LEX_NEG         : 
          case LEX_INT         : const char *val;
                                 if(LEX_INT == lex.get_num(val))
                                 {
-                                   vint = atoi(val);
-                                   vtype = Valtype::Int;
+                                    node->vint = atoi(val);
+                                    node->vtype = Valtype::Int;
                                 }
                                 else 
                                 {
-                                   vreal = atof(val);
-                                   vtype = Valtype::Float;
+                                    node->vreal = atof(val);
+                                    node->vtype = Valtype::Float;
                                 }
                                 break;
 
-         case LEX_STRING      : lex.get_str(vstr);
+         case LEX_STRING      : lex.get_str(node->vstr);
                                 if(LEX_STRING != lex.cur_sym)
                                 {
-                                   trw_err("Unterminated string value");
+                                    trw_err("Unterminated string value");
                                 }
                                 else 
                                 { 
-                                   lex.next(); 
-                                   vtype = Valtype::String; 
-                                   break; 
+                                    node->vtype = Valtype::String;
+                                    lex.next();
+                                    break; 
                                 }
 
-         case LEX_BOOL_TRUE   : vbool = true;
-                                vtype = Valtype::Bool;
+         case LEX_BOOL_TRUE   : node->vbool = true;
+                                node->vtype = Valtype::Bool;
                                 lex.next();
                                 break;
          
-         case LEX_BOOL_FALSE  : vbool = false;
-                                vtype = Valtype::Bool;
+         case LEX_BOOL_FALSE  : node->vbool = false;
+                                node->vtype = Valtype::Bool;
                                 lex.next();
                                 break;
 
-         case LEX_NULL        : vtype = Valtype::Null;
+         case LEX_NULL        : node->vtype = Valtype::Null;
                                 lex.next();
                                 break;
 
-         case LEX_ARRAY_OPEN  : ParseArray(lex);
-                                vtype = Valtype::Array;
+         case LEX_ARRAY_OPEN  : temp = this->ParseArray(lex);
+                                node->vtype = Valtype::Array;
+                                node->varr = temp;
                                 lex.next(); /* move past array close symbol */
                                 break;
 
-         case LEX_OBJECT_OPEN : ParseObject(lex);
-                                vtype = Valtype::Object;
+         case LEX_OBJECT_OPEN : temp = this->ParseObject(lex);
+                                node->vtype = Valtype::Object;
+                                node->vobj = temp;
                                 lex.next(); /* move past object close symbol */
                                 break;
 
@@ -67,39 +72,45 @@ namespace ddjson
             node_close != lex.cur_sym)
          trw_err("Expected value seperator");
 
-      return OK;
+      return node;
    }
 
-   bool Parser_t::ParseArray(Lexer_t &lex)
+   Node_t * Parser_t::ParseArray(Lexer_t &lex)
    {
-      Parser_t *pp = NULL;
+      Node_t *node = new Node_t();
+      node->vtype = Valtype::Array;
 
       /* handle empty array */
       if(LEX_ARRAY_CLOSE == lex.next())
-         return OK;
-
-      pcount++;
-      vobj = pp = new Parser_t(pdoc);
-      pp->pparent = this;
-      pp->ParseNode(lex, LEX_ARRAY_CLOSE);
-
-      while(LEX_ARRAY_CLOSE != lex.cur_sym)
-      {
-         pcount++;
-         lex.next();
-         NEXT_NEW_NODE(pp);
-         pp->ParseNode(lex, LEX_ARRAY_CLOSE);
+      {         
+         node->vlast = NULL;
+         node->varr = NULL;
+         return node;
       }
 
-      vlast = pp;
+      Node_t *curr = nullptr;
+      while(LEX_ARRAY_CLOSE != lex.cur_sym)
+      {
+         Node_t *temp = this->ParseNode(lex, LEX_ARRAY_CLOSE);
+         if(curr == nullptr) {
+            node->vobj = temp;
+         } else {
+            curr->pnext = temp;
+         }
+         temp->pprev = curr;
+         curr = temp;
+         lex.next();
+      }
 
-      return OK;
+      node->vlast = curr;
+
+      return node;
    }
 
-   bool Parser_t::ParseObject(Lexer_t &lex)
+   Node_t * Parser_t::ParseObject(Lexer_t &lex)
    {
-      Parser_t *pp = NULL;
-      vobj = pp = new Parser_t(pdoc);
+      Node_t *curr = nullptr;
+      Node_t *node = new Node_t();
 
       while(LEX_OBJECT_CLOSE != lex.cur_sym)
       {
@@ -110,30 +121,37 @@ namespace ddjson
          if(LEX_STRING != lex.cur_sym)
             trw_err("Expected node name");
 
-         lex.get_str(pp->name);
+         lex.get_str(node->name);
          if(LEX_STRING != lex.cur_sym)
             trw_err("Invalid node name");
 
          if(LEX_NAME_SEPERATOR != lex.next())
             trw_err("Expected name seperator");
          
-         pcount++;
          lex.next();
-         pp->ParseNode(lex, LEX_OBJECT_CLOSE);
-         NEXT_NEW_NODE(pp);
+         Node_t *temp = this->ParseNode(lex, LEX_OBJECT_CLOSE);
+         temp->pprev = curr;
+         if(curr == nullptr)
+         {
+            node->vobj = temp;
+         }
+         else
+         {
+            curr->pnext = temp;
+         }
+         curr = temp;
       }
 
-      if(vobj == pp) /* object is empty */
+      if(curr == node) /* object is empty */
       {
-         vobj = NULL;
+         node->vlast = node->vobj = nullptr;
       }
       else
       {
-         vlast = pp->pprev;
-         vlast->pnext = NULL;
+         node->vlast = curr;
+         node->vlast->pnext = nullptr;
       }
-      delete pp;
 
-      return OK;
+      return node;
    }
 }

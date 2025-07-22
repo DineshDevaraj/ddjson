@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "lexer.h"
-#include "node.h"
 #include "doc.h"
 
 namespace ddjson
@@ -11,27 +10,19 @@ namespace ddjson
    #define OK   true
    #define ERR  false
 
-   #define NEXT_NEW_NODE(ptr) \
+   #define NEXT_NEW_NODE(curr) \
    ({ \
-         Parser_t *swp = new Parser_t(pdoc); \
-         swp->pprev = ptr; \
-         ptr->pnext = swp; \
-         ptr->pparent = this; \
-         ptr = swp; \
+         Node_t swp = new Node_t(); \
+         swp.pprev = &curr; \
+         curr.pnext = &swp; \
+         curr.pparent = &this; \
+         curr = swp; \
     })
 
-   struct Parser_t : public Node_t
+   struct Parser_t
    {
-      Parser_t(Doc_t *doc) { pdoc = doc; }
-
-      Parser_t(Doc_t *doc, Valtype_t type) 
-      { 
-         pdoc = doc;
-         vtype = type; 
-      }
-
-      bool ParseArray(Lexer_t &lex);
-      bool ParseObject(Lexer_t &lex);
-      bool ParseNode(Lexer_t &lex, Symbol node_close);
+      Node_t * ParseNode(Lexer_t &lex, Symbol node_close);
+      Node_t * ParseObject(Lexer_t &lex);
+      Node_t * ParseArray(Lexer_t &lex);
    };
 }
