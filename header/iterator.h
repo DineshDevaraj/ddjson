@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "node.h"
+#include "forward_declarations.h"
 
 namespace ddjson
 {

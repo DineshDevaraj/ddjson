@@ -1,4 +1,5 @@
 
+#include "node.h"
 #include "iterator.h"
 
 namespace ddjson
