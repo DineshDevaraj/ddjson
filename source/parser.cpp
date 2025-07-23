@@ -24,6 +24,7 @@ namespace ddjson
          error.colum = this->lex.cur_pos - this->lex.line_bgn + 1;
          error.offset = this->lex.cur_pos - this->lex.json_str + 1;
       }
+      return nullptr;
    }
 
    Node_t & Parser_t::root() {
