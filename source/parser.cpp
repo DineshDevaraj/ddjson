@@ -12,13 +12,13 @@ namespace ddjson
       try
       {
          if(LEX_OBJECT_OPEN != this->lex.cur_sym)
-            trw_err("Expected object at start");
+            throw_ddjex("Expected object at start");
          this->proot = this->ParseObject();
          return this->proot;
       }
-      catch(Exception exc)
+      catch(DDJException exc)
       {
-         error.desc = exc.msg;
+         error.desc = exc.desc;
          error.line = this->lex.line;
          error.colum = this->lex.cur_pos - this->lex.line_bgn + 1;
          error.offset = this->lex.cur_pos - this->lex.json_str + 1;
@@ -65,7 +65,7 @@ namespace ddjson
             msg = R"(Expected number, char, string-open `"`,)";
             msg += " array-open `[` or object-open `{`";
             msg += " but got `" + symbol + "` instead";
-            trw_err(msg.data());
+            throw_ddjex(msg.data());
       }
 
       if(LEX_VALUE_SEPERATOR != this->lex.cur_sym and 
@@ -76,7 +76,7 @@ namespace ddjson
          std::string msg = "Expected name-value separator `:`, value-value separator `,`";
          msg += " or close-symbol `" + close_symbol + "` but got `";
          msg += curr_symbol + "` instead";
-         trw_err(msg.data());
+         throw_ddjex(msg.data());
       }
 
       return node;
@@ -106,7 +106,7 @@ namespace ddjson
       Node_t *node = new Node_t(Valtype::String);
       this->lex.get_str(node->vstr);
       if(LEX_STRING != this->lex.cur_sym)
-         trw_err("Unterminated string value");
+         throw_ddjex("Unterminated string value");
       this->lex.next();
       return node;
    }
@@ -166,14 +166,14 @@ namespace ddjson
             break;
 
          if(LEX_STRING != this->lex.cur_sym)
-            trw_err("Expected node name");
+            throw_ddjex("Expected node name");
 
          this->lex.get_str(name);
          if(LEX_STRING != this->lex.cur_sym)
-            trw_err("Invalid node name");
+            throw_ddjex("Invalid node name");
 
          if(LEX_NAME_SEPERATOR != this->lex.next())
-            trw_err("Expected name seperator");
+            throw_ddjex("Expected name seperator");
          
          this->lex.next();
          Node_t *temp = this->ParseNode(LEX_OBJECT_CLOSE);

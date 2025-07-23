@@ -9,14 +9,6 @@ namespace ddjson
    using namespace std;
 
    #define oInvalid (*((Node_t *)0))
-
-   struct Error_t
-   {
-      int line;
-      int colum;
-      int offset;
-      string desc;
-   };
    
    /* different value types supported in JSON */
    struct Valtype

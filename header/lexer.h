@@ -19,18 +19,18 @@ namespace ddjson
 
     #define IS_SPACE(ch) (' ' == ch or '\t' == ch or '\r' == ch or '\n' == ch)
 
-   struct Exception
+   struct DDJException
    {
       int line;
-      std::string fn;
+      std::string func;
       std::string file;
-      std::string msg = "None";
+      std::string desc = "None";
 
-      Exception(const char *file, const char *fn, size_t line, const char *msg) :
-         file(file), fn(fn), line(line), msg(msg) {}
+      DDJException(const char *file, const char *func, size_t line, const char *desc) :
+         file(file), func(func), line(line), desc(desc) {}
    };
 
-   #define trw_err(msg) throw Exception(__FILE__, __FUNCTION__, __LINE__, msg)
+   #define throw_ddjex(desc) throw DDJException(__FILE__, __FUNCTION__, __LINE__, desc)
 
     enum Symbol
     {

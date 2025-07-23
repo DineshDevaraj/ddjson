@@ -18,7 +18,15 @@ namespace ddjson
          else curr->pnext = temp;               \
          node->child_count++;                   \
          curr = temp;                           \
-    })
+   })
+
+   struct Error_t
+   {
+      int line;
+      int colum;
+      int offset;
+      string desc;
+   };
 
    struct Parser_t
    {

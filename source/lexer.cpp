@@ -69,7 +69,7 @@ Symbol Lexer_t::get_num(const char * &val)
    Symbol sym = LEX_INT;
 
    if('-' == *cur_pos and !isdigit(*++cur_pos))
-         trw_err("Expected digit");
+         throw_ddjex("Expected digit");
 
    while(isdigit(*cur_pos)) 
       cur_pos++;
@@ -88,7 +88,7 @@ Symbol Lexer_t::get_num(const char * &val)
       else if('+' == *cur_pos || '-' == *cur_pos)
       {
          if(not isdigit(*++cur_pos))
-            trw_err("Expected digit");
+            throw_ddjex("Expected digit");
          while(isdigit(*++cur_pos));
       }
    }
@@ -143,11 +143,11 @@ Symbol Lexer_t::get_str(std::string &val)
                               arr[I] |= (ch - 'a' + 0xA);
                            else if('A' <= ch and ch <= 'F')
                               arr[I] |= (ch - 'A' + 0xA);
-                           else trw_err("Invalid unicode value");
+                           else throw_ddjex("Invalid unicode value");
                         }
                         break;
 
-            default   : trw_err("Invalid escape sequence");
+            default   : throw_ddjex("Invalid escape sequence");
          }
       }
       else
