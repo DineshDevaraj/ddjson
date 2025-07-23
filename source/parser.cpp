@@ -41,16 +41,18 @@ namespace ddjson
             msg = R"(Expected number, char, string-open `"`,)";
             msg += " array-open `[` or object-open `{`";
             msg += " but got `" + symbol + "` instead";
-            trw_err(msg.c_str());
+            trw_err(msg.data());
       }
 
       if(LEX_VALUE_SEPERATOR != lex.cur_sym and 
             node_close != lex.cur_sym) 
       {
-         char fstr[] = "Expected key-value seperator `:` or node close `%c` but got `%c` instead";
-         char msg[sizeof(fstr)];
-         sprintf(msg, fstr, node_close, lex.cur_sym);
-         trw_err(msg);
+         std::string close_symbol = std::string("") + (char)node_close;
+         std::string curr_symbol = std::string("") + (char)lex.cur_sym;
+         std::string msg = "Expected name-value separator `:`, value-value separator `,`";
+         msg += " or close-symbol `" + close_symbol + "` but got `";
+         msg += curr_symbol + "` instead";
+         trw_err(msg.data());
       }
 
       return node;

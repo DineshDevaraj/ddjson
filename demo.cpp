@@ -34,15 +34,13 @@ char json_str[5000] = {};
 
 int main(int argc, char *argv[])
 {
-   Doc_t oJson;
-   char file[256] = {};
-
    if(argc < 3)
    {
       printf("Usage: %s <start> <end>\n", argv[0]);
       return 1;
    }
 
+   char file[256] = {};
    int start = atoi(argv[1]);
    int end = atoi(argv[2]);
    for(int I = start ; I < end; I++)
@@ -55,12 +53,13 @@ int main(int argc, char *argv[])
          break;
       }
 
+      Doc_t oJson;
       Node_t &root = oJson.parse_file(file);
       if(not oJson.error.desc.empty())
       {
          printf("Error in file %s line %d column %d\n", 
             file, oJson.error.line, oJson.error.colum);
-         printf("Error: %s\n", oJson.error.desc.data());
+         printf("Error: %s\n\n", oJson.error.desc.data());
          fclose(fh);
          continue;
       }
