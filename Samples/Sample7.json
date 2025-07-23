@@ -1,14 +1,4 @@
 {
    "int" : 93,
-   "float" : 3.14,
-   "bool_true" : true,
-   "bool_false" : false,
-   "null" : null,
-   "string" : "Sample7",
-   "array" : [1, 2, 3, 4, 5],
-   "nested_object" : {
-      "int" : 42,
-      "float" : 2.71,
-      "string" : "NestedSample7"
-   }
+   "empty_list" : []
 }

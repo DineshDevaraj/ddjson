@@ -32,12 +32,20 @@ void PrintJson(Node_t &node)
 
 char json_str[5000] = {};
 
-int main()
+int main(int argc, char *argv[])
 {
    Doc_t oJson;
    char file[256] = {};
 
-   for(int I = 7; I <= 7; I++)
+   if(argc < 3)
+   {
+      printf("Usage: %s <start> <end>\n", argv[0]);
+      return 1;
+   }
+
+   int start = atoi(argv[1]);
+   int end = atoi(argv[2]);
+   for(int I = start ; I < end; I++)
    {
       sprintf(file, "samples/sample%d.json", I);
       FILE *fh = fopen(file, "r");

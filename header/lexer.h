@@ -22,9 +22,9 @@ namespace ddjson
    struct Exception
    {
       int line;
-      const char *fn;
-      const char *file;
-      const char *msg;
+      std::string fn;
+      std::string file;
+      std::string msg = "None";
 
       Exception(const char *file, const char *fn, size_t line, const char *msg) :
          file(file), fn(fn), line(line), msg(msg) {}

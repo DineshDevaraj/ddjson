@@ -39,8 +39,13 @@ namespace ddjson
       }
 
       if(LEX_VALUE_SEPERATOR != lex.cur_sym and 
-            node_close != lex.cur_sym)
-         trw_err("Expected value seperator");
+            node_close != lex.cur_sym) 
+      {
+         char fstr[] = "Expected key-value seperator `:` or node close `%c` but got `%c` instead";
+         char msg[sizeof(fstr)];
+         sprintf(msg, fstr, node_close, lex.cur_sym);
+         trw_err(msg);
+      }
 
       return node;
    }
@@ -97,19 +102,19 @@ namespace ddjson
       lex.next();
 
       /* handle empty array */
-      if(LEX_ARRAY_CLOSE == lex.cur_sym)
-         return node;
-
-      Node_t *curr;
-      for(curr = nullptr; ; lex.next())
+      if(LEX_ARRAY_CLOSE != lex.cur_sym)
       {
-         Node_t *temp = this->ParseNode(lex, LEX_ARRAY_CLOSE);
-         NEXT_NEW_NODE(node, curr);
-         if(LEX_ARRAY_CLOSE == lex.cur_sym)
-            break;
+         Node_t *curr;
+         for(curr = nullptr; ; lex.next())
+         {
+            Node_t *temp = this->ParseNode(lex, LEX_ARRAY_CLOSE);
+            NEXT_NEW_NODE(node, curr);
+            if(LEX_ARRAY_CLOSE == lex.cur_sym)
+               break;
+         }
+         node->vlast = curr;
       }
 
-      node->vlast = curr;
       /* move past array close symbol */
       lex.next();
 
