@@ -5,38 +5,24 @@
 
 #include "doc.h"
 #include "node.h"
-#include "lexer.h"
 #include "parser.h"
 #include "helper.h"
 
 namespace ddjson
 {
    Node_t & Doc_t::root() { 
-      return *this->proot; 
+      return this->pparser->root(); 
    }
 
-   Node_t & Doc_t::parse_string(const char *json_arg)
+   Error_t & Doc_t::error() {
+      return this->pparser->error;
+   }
+
+   Node_t & Doc_t::parse_string(const char *json_str)
    {
-      Lexer_t lex;
-      Parser_t parser;
-
-      try
-      {
-         lex.load_string(json_arg);
-         if(LEX_OBJECT_OPEN != lex.cur_sym)
-            trw_err("Expected object at start");
-         this->proot = parser.ParseObject(lex);
-         return *this->proot;
-      }
-      catch(Exception exc)
-      {
-         error.desc = exc.msg;
-         error.line = lex.line;
-         error.colum = lex.cur_pos - lex.line_bgn + 1;
-         error.offset = lex.cur_pos - lex.json_str + 1;
-      }
-
-      return oInvalid;
+      this->pparser = new Parser_t(json_str);
+      this->pparser->ParseRoot();
+      return this->root();
    }
 
    Node_t & Doc_t::parse_file(FILE *fh)
@@ -48,7 +34,7 @@ namespace ddjson
       fread(json_str, sizeof(char), st.st_size, fh);
       parse_string(json_str);
       delete [] json_str;
-      return *this->proot;
+      return this->root();
    }
 
    Node_t & Doc_t::parse_file(const char *file_path)
@@ -57,11 +43,11 @@ namespace ddjson
       if(NULL == fh) return oInvalid;
       parse_file(fh);
       fclose(fh);
-      return *this->proot;
+      return this->root();
    }
 
    Doc_t::~Doc_t()
    {
-      Helper_t::free_node(this->proot);
+      delete this->pparser;
    }
 }

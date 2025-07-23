@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "ddjson.h"
+#include "error.h"
 
 using namespace std;
 using namespace ddjson;
@@ -55,12 +56,12 @@ int main(int argc, char *argv[])
 
       Doc_t oJson;
       Node_t &root = oJson.parse_file(file);
-      if(not oJson.error.desc.empty())
+      Error_t &error = oJson.error();
+      if(not error.desc.empty())
       {
          printf("Error in file %s line %d column %d\n", 
-            file, oJson.error.line, oJson.error.colum);
-         printf("Error: %s\n\n", oJson.error.desc.data());
-         fclose(fh);
+            file, error.line, error.colum);
+         printf("Error: %s\n\n", error.desc.data());
          continue;
       }
 

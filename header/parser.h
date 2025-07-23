@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include "lexer.h"
-#include "doc.h"
+#include "error.h"
+#include "node.h"
 
 namespace ddjson
 {
@@ -21,15 +22,29 @@ namespace ddjson
 
    struct Parser_t
    {
+      Parser_t(const char *json_str);
+
       public:
-         Node_t * ParseObject(Lexer_t &lex);
+         Node_t & root();
+         Node_t * ParseRoot();
 
       private:
-         Node_t * ParseNode(Lexer_t &lex, Symbol node_close);
-         Node_t * ParseNumbers(Lexer_t &lex);
-         Node_t * ParseString(Lexer_t &lex);
-         Node_t * ParseBool(Lexer_t &lex, bool value);
-         Node_t * ParseNull(Lexer_t &lex);
-         Node_t * ParseArray(Lexer_t &lex);
+         Node_t * ParseNode(Symbol node_close);
+         Node_t * ParseNumbers();
+         Node_t * ParseString();
+         Node_t * ParseBool(bool val);
+         Node_t * ParseObject();
+         Node_t * ParseArray();
+         Node_t * ParseNull();
+
+      public:
+         Error_t error;
+
+      private:
+         Node_t *proot = nullptr;
+         Lexer_t lex;
+
+      public:
+         ~Parser_t();
    };
 }

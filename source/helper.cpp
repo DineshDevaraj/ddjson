@@ -4,7 +4,6 @@
 #include <ostream>
 
 #include "helper.h"
-#include "doc.h"
 
 namespace ddjson
 {

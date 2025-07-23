@@ -2,15 +2,15 @@
 #pragma once
 
 #include "forward_declarations.h"
+#include "parser.h"
 #include "node.h"
 
 namespace ddjson
 {
    struct Doc_t
    {
-      Error_t error;
-
       Node_t & root();
+      Error_t & error();
 
       Node_t & parse_file(FILE *);
       Node_t & parse_file(const char *);
@@ -18,6 +18,7 @@ namespace ddjson
 
       ~Doc_t();
 
-      private : Node_t *proot;
+      private : 
+         Parser_t *pparser = nullptr;
    };
 }
