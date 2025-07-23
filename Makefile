@@ -8,4 +8,4 @@ demo: demo.cpp source/*.cpp source/*/*.cpp header/*.h
 	$(CXX) $(CXXFLAGS) -Iheader -o demo demo.cpp source/*.cpp source/*/*.cpp
 
 clean:
-	rm -f *.exe *.gch
+	rm -f *.exe.* *.exe *.gch
