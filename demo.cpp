@@ -56,12 +56,13 @@ int main(int argc, char *argv[])
       }
 
       Node_t &root = oJson.parse_file(file);
-      if(!root)
+      if(not oJson.error.desc.empty())
       {
-         printf("%s at or before colum %d in line %d\n",
-               oJson.error.desc.data(), oJson.error.colum, 
-               oJson.error.line);
-         break;
+         printf("Error in file %s line %d column %d\n", 
+            file, oJson.error.line, oJson.error.colum);
+         printf("Error: %s\n", oJson.error.desc.data());
+         fclose(fh);
+         continue;
       }
 
       root.write(json_str, 0);

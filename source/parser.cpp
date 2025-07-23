@@ -35,7 +35,13 @@ namespace ddjson
             node = this->ParseObject(lex);
             break;
 
-         default : trw_err("Expected number, char, string, array or object");
+         default :
+            std::string msg;
+            std::string symbol = std::string("") + (char)lex.cur_sym;
+            msg = R"(Expected number, char, string-open `"`,)";
+            msg += " array-open `[` or object-open `{`";
+            msg += " but got `" + symbol + "` instead";
+            trw_err(msg.c_str());
       }
 
       if(LEX_VALUE_SEPERATOR != lex.cur_sym and 

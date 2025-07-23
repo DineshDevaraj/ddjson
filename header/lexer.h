@@ -72,6 +72,5 @@ namespace ddjson
 
         Symbol get_str(std::string &val);
         Symbol get_num(const char * &val);
-        Symbol get_char(const char * &val);
     };
 }
