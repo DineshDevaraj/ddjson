@@ -11,20 +11,20 @@ namespace ddjson
    template int Helper_t::write<char>(char* &ptr, Node_t *pn, const char *pad, int lev);
    template int Helper_t::write<ostream>(ostream* &ptr, Node_t *pn, const char *pad, int lev);
 
-   void Helper_t::free_node(Node_t *pnode)
+   Node_t * Helper_t::free_node(Node_t *pnode)
    {
       if(nullptr == pnode)
-         return;
+         return nullptr;
+
+      Node_t *next = pnode->vobj;
 
       if(Valtype::Array == pnode->vtype or
             Valtype::Object == pnode->vtype)
-      {
-         Node_t *curr = pnode->vobj;
-         for(curr; curr; curr = curr->pnext)
-            Helper_t::free_node(curr);
-      }
-                                
+         while(next = Helper_t::free_node(next));
+
+      next = pnode->pnext;
       delete pnode;
+      return next;
    }
 
    template <> int Helper_t::print(FILE * &fh, const char *fmt, ...)

@@ -1,4 +1,6 @@
 {
    "int" : 93,
-   "empty_list" : [
+   "float" : 3.14,
+   "invalid_array" : [1,
+   "string": "Hello World!",
 }
