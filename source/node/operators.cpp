@@ -5,7 +5,7 @@ namespace ddjson
 {
    Node_t::operator int    () const { return this->vint;  }
    Node_t::operator char   () const { return this->vchar; }
-   Node_t::operator bool   () const { return this != &oInvalid; }
+   Node_t::operator bool   () const { return this->vbool; }
    Node_t::operator float  () const { return this->vreal; }
    Node_t::operator string () const { return this->vstr;  }
 

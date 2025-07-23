@@ -36,7 +36,7 @@ namespace ddjson
       Node_t *pprev;
       Node_t *pparent;
 
-      int child_count;
+      int m_child_count;
 
       std::string vstr;
       Valtype_t vtype;
@@ -74,8 +74,8 @@ namespace ddjson
       Node_t & prev() const;
       Node_t & parent() const;
       
-      int count() const;
-      bool valid() const;
+      bool is_valid() const;
+      int child_count() const;
 
       operator bool () const;
 

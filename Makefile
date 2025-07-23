@@ -15,3 +15,4 @@ demo: demo.cpp source/*.cpp source/*/*.cpp header/*.h
 
 clean:
 	rm -f *.exe.* *.exe *.gch $(output_name)
+

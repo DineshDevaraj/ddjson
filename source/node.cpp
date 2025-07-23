@@ -10,7 +10,7 @@ namespace ddjson
       this->vobj = nullptr;
       this->vlast = nullptr;
 
-      this->child_count = 0;
+      this->m_child_count = 0;
 
       this->proot = nullptr;
       this->pnext = nullptr;
@@ -25,9 +25,10 @@ namespace ddjson
       this->vtype = type;
    }
 
-   int Node_t::count() const { return this->child_count; }
 
-   bool Node_t::valid() const { return this != &oInvalid; }
+   bool Node_t::is_valid() const { return this != &oInvalid; }
+
+   int Node_t::child_count() const { return this->m_child_count; }
 
    Valtype_t Node_t::value_type() const { return this->vtype; }
 }

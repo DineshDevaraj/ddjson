@@ -1,0 +1,94 @@
+
+#include <cstdint>
+#include <catch2/catch_test_macros.hpp>
+#include "doc.h"
+#include "node.h"
+
+using namespace ddjson;
+
+TEST_CASE("Validate JSON Parsing") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"int": 42})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root.child_count() == 1);
+    REQUIRE(root.value_type() == Valtype::Object);
+    REQUIRE(root.is_valid() == true);
+    REQUIRE(bool(root) == true);
+}
+
+TEST_CASE("Validate int field") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"int": 42})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["int"].is_valid() == true);
+    REQUIRE(root["int"].value_type() == Valtype::Int);
+    REQUIRE(int(root["int"]) == 42);
+}
+
+TEST_CASE("Validate float field") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"float": 3.14})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["float"].is_valid() == true);
+    REQUIRE(root["float"].value_type() == Valtype::Float);
+    REQUIRE(float(root["float"]) == 3.14f);
+}
+
+TEST_CASE("Validate string field") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"string": "Hello, World!"})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["string"].is_valid() == true);
+    REQUIRE(root["string"].value_type() == Valtype::String);
+    REQUIRE(string(root["string"]) == "Hello, World!");
+}
+
+TEST_CASE("Validate array field") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"array": [1, 2, 3]})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["array"].is_valid() == true);
+    REQUIRE(root["array"].value_type() == Valtype::Array);
+    REQUIRE(root["array"].child_count() == 3);
+    REQUIRE(int(root["array"][0]) == 1);
+    REQUIRE(int(root["array"][1]) == 2);
+    REQUIRE(int(root["array"][2]) == 3);
+}
+
+TEST_CASE("Validate object field") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"object": {"key": "value"}})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["object"].is_valid() == true);
+    REQUIRE(root["object"].value_type() == Valtype::Object);
+    REQUIRE(root["object"]["key"].is_valid() == true);
+    REQUIRE(root["object"]["key"].value_type() == Valtype::String);
+    REQUIRE(string(root["object"]["key"]) == "value");
+}
+
+TEST_CASE("Validate boolean true field") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"bool": true})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["bool"].is_valid() == true);
+    REQUIRE(root["bool"].value_type() == Valtype::Bool);
+    REQUIRE(bool(root["bool"]) == true);
+}
+
+TEST_CASE("Validate boolean false field") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"bool": false})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["bool"].is_valid() == true);
+    REQUIRE(root["bool"].value_type() == Valtype::Bool);
+    REQUIRE(bool(root["bool"]) == false);
+}
+
+TEST_CASE("Validate null field") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"null": null})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["null"].is_valid() == true);
+    REQUIRE(root["null"].value_type() == Valtype::Null);
+    REQUIRE(bool(root["null"]) == nullptr);
+}

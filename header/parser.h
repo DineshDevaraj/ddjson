@@ -16,7 +16,7 @@ namespace ddjson
          temp->pprev = curr;                    \
          if(curr == nullptr) node->vobj = temp; \
          else curr->pnext = temp;               \
-         node->child_count++;                   \
+         node->m_child_count++;                 \
          curr = temp;                           \
    })
 

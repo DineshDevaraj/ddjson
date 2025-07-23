@@ -23,7 +23,7 @@ void PrintJson(Node_t &node)
          case Valtype::String : cerr << (string)ref << endl;
                                 break;
          case Valtype::Array  :
-         case Valtype::Object : fprintf(stderr, "(%d)\n", ref.count());
+         case Valtype::Object : fprintf(stderr, "(%d)\n", ref.child_count());
                                 PrintJson(ref);
                                 break;
       }
