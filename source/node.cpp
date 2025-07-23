@@ -7,7 +7,6 @@ namespace ddjson
 {
    Node_t::Node_t()    
    {
-      this->pdoc = nullptr;
       this->vobj = nullptr;
       this->vlast = nullptr;
 
@@ -25,8 +24,6 @@ namespace ddjson
    {
       this->vtype = type;
    }
-
-   Doc_t & Node_t::doc() const { return *this->pdoc; }
 
    int Node_t::count() const { return this->child_count; }
 

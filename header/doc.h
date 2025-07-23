@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include "forward_declarations.h"
 #include "parser.h"
 #include "node.h"
 

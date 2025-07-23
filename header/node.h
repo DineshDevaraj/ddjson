@@ -39,8 +39,6 @@ namespace ddjson
 
    struct MembersMixin_t
    {
-      Doc_t *pdoc;
-
       Node_t *proot;
       Node_t *pnext;
       Node_t *pprev;
@@ -76,7 +74,6 @@ namespace ddjson
       Node_t();
       Node_t(Valtype_t type);
 
-      Doc_t & doc() const;
       Node_t & root() const;
 
       Valtype_t value_type() const;
@@ -92,9 +89,6 @@ namespace ddjson
 
       Node_t & operator [] (const int idx) const;
       Node_t & operator [] (const char *name) const;
-
-      bool operator != (const Iterator_t &rhs) const;
-      bool operator == (const Iterator_t &rhs) const;
 
       operator int () const;
       operator char () const;

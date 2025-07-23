@@ -1,5 +1,4 @@
 
-#include "forward_declarations.h"
 #include "parser.h"
 #include "helper.h"
 
