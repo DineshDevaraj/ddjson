@@ -2,18 +2,20 @@
 CXX := g++
 CXXFLAGS := -g
 HEADER := -Iheader
+LIB := ./libs/libddjson.so
+BIN := demo.bin
 
-all: ddjson.so demo.bin
+all: $(LIB) $(BIN)
 
-ddjson.so: source/*.cpp source/*/*.cpp header/*.h
+$(LIB): source/*.cpp source/*/*.cpp header/*.h
 	mkdir -p libs
 	$(CXX) $(CXXFLAGS) $(HEADER) -fPIC -c source/*.cpp source/*/*.cpp
 	mv *.o libs
-	$(CXX) $(CXXFLAGS) $(HEADER) -shared -o ./libs/libddjson.so ./libs/*.o
+	$(CXX) $(CXXFLAGS) $(HEADER) -shared -o $(LIB) ./libs/*.o
 
-demo.bin: demo.cpp ./libs/libddjson.so
-	$(CXX) $(CXXFLAGS) $(HEADER) -L./libs -o demo.bin demo.cpp -lddjson
+$(BIN): demo.cpp $(LIB)
+	$(CXX) $(CXXFLAGS) $(HEADER) -L./libs -o $(BIN) demo.cpp -lddjson
 
 clean:
-	rm -f *.exe.* *.exe *.gch demo.bin
+	rm -f *.exe.* *.exe *.gch $(BIN)
 	rm -f ./libs/*.so ./libs/*.o
