@@ -12,7 +12,7 @@ namespace ddjson
       try
       {
          if(Symbols::ObjectOpen != this->lex.cur_sym)
-            throw_ddjex("Expected object at start");
+            throw_ddjex("Expected object-open `{` as first character");
          this->proot = this->ParseObject();
          return this->proot;
       }
@@ -71,7 +71,7 @@ namespace ddjson
          default :
             std::string msg;
             std::string symbol = s2s(this->lex.cur_sym);
-            msg = R"(Expected number, char, string-open `"`,)";
+            msg = R"(Expected number, char, double-quote `"`,)";
             msg += " array-open `[` or object-open `{`";
             msg += " but got `" + symbol + "` instead";
             throw_ddjex(msg.data());
@@ -82,7 +82,7 @@ namespace ddjson
       {
          std::string close_symbol = s2s(node_close);
          std::string curr_symbol = s2s(this->lex.cur_sym);
-         std::string msg = "Expected name-value separator `:`, value-value separator `,`";
+         std::string msg = "Expected colon `:`, comma `,`";
          msg += " or close-symbol `" + close_symbol + "` but got `";
          msg += curr_symbol + "` instead";
          throw_ddjex(msg.data());
@@ -182,7 +182,7 @@ namespace ddjson
             throw_ddjex("Invalid node name");
 
          if(Symbols::Colon != this->lex.next())
-            throw_ddjex("Expected name-value seperator colon `:`");
+            throw_ddjex("Expected colon `:`");
          
          this->lex.next();
          Node_t *temp = this->ParseNode(Symbols::ObjectClose);
