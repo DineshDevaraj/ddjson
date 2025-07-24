@@ -1,18 +1,12 @@
 
-CXX := g++
-CXXFLAGS := -g -Wall -Wextra
+all:
 
-ifeq ($(OS),Windows_NT)
-output_name := demo.exe
-else
-output_name := demo.bin
-endif
+src: 
+	make -f Makefile.src
 
-all: demo
-
-demo: demo.cpp source/*.cpp source/*/*.cpp header/*.h
-	$(CXX) $(CXXFLAGS) -Iheader -o $(output_name) demo.cpp source/*.cpp source/*/*.cpp
+test:
+	make -f Makefile.test
 
 clean:
-	rm -f *.exe.* *.exe *.gch $(output_name)
-
+	make -f Makefile.src clean
+	make -f Makefile.test clean
