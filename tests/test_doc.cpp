@@ -27,7 +27,9 @@ TEST_CASE("Validate missing colon error") {
 TEST_CASE("Validate missing closing brace error") {
     Doc_t jsonDoc;
     const char *jsonStr = R"({"key": "value")";
-    string errMsg = "Expected object close symbol `}`";
+    string errMsg = "Expected name-value separator `:`, "
+        "value-value separator `,` or close-symbol `}` but "
+        "got `null` instead";
     Node_t &root = jsonDoc.parse_string(jsonStr);
     REQUIRE(root.is_valid() == false);
     REQUIRE(jsonDoc.error().desc == errMsg);

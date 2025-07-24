@@ -34,10 +34,9 @@ namespace ddjson
     * s2s - symbol to string
     */
    string s2s(Symbols sym) {
-      s = string("");
-      if(sym == Symbols::Invalid):
-         return s;
-      return s+(char)sym;
+      if(sym == Symbols::Invalid)
+         return "null";
+      return string("")+(char)sym;
    }
 
    Node_t * Parser_t::ParseNode(Symbols node_close)
