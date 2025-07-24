@@ -1,5 +1,6 @@
 
 all:
+	echo "Valid Usage: make src, make test or make clean"
 
 src: 
 	make -f Makefile.src

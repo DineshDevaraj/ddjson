@@ -1,18 +1,19 @@
 
 CXX := g++
-CXXFLAGS := -g -Wall -Wextra
+CXXFLAGS := -g
+HEADER := -Iheader
 
-ifeq ($(OS),Windows_NT)
-output_name := demo.exe
-else
-output_name := demo.bin
-endif
+all: ddjson.so demo.bin
 
-all: demo
+ddjson.so: source/*.cpp source/*/*.cpp header/*.h
+	mkdir -p libs
+	$(CXX) $(CXXFLAGS) $(HEADER) -fPIC -c source/*.cpp source/*/*.cpp
+	mv *.o libs
+	$(CXX) $(CXXFLAGS) $(HEADER) -shared -o ./libs/libddjson.so ./libs/*.o
 
-demo: demo.cpp source/*.cpp source/*/*.cpp header/*.h
-	$(CXX) $(CXXFLAGS) -Iheader -o $(output_name) demo.cpp source/*.cpp source/*/*.cpp
+demo.bin: demo.cpp ./libs/libddjson.so
+	$(CXX) $(CXXFLAGS) $(HEADER) -L./libs -o demo.bin demo.cpp -lddjson
 
 clean:
-	rm -f *.exe.* *.exe *.gch $(output_name)
-
+	rm -f *.exe.* *.exe *.gch demo.bin
+	rm -f ./libs/*.so ./libs/*.o
