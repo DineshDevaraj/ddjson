@@ -32,33 +32,33 @@ namespace ddjson
 
    #define throw_ddjex(desc) throw DDJException(__FILE__, __FUNCTION__, __LINE__, desc)
 
-    enum Symbol
+    enum class Symbols
     {
-        LEX_INT              = 'I'    ,
-        LEX_NEG              = '-'    ,
-        LEX_FLOAT            = '.'    ,
-        LEX_STRING           = '"'    ,
-        LEX_NULL             = 'N'    ,
-        LEX_BOOL_TRUE        = 'T'    ,
-        LEX_BOOL_FALSE       = 'F'    ,
+        Int         = 'I',
+        Neg         = '-',
+        Float       = '.',
+        Null        = 'N',
+        True        = 'T',
+        False       = 'F',
+        DoubleQuote = '"',
 
-        LEX_ARRAY_OPEN       = '['    ,
-        LEX_ARRAY_CLOSE      = ']'    ,
+        ArrayOpen   = '[',
+        ArrayClose  = ']',
 
-        LEX_OBJECT_OPEN      = '{'    ,
-        LEX_OBJECT_CLOSE     = '}'    ,
+        ObjectOpen  = '{',
+        ObjectClose = '}',
 
-        LEX_NAME_SEPERATOR   = ':'    ,
-        LEX_VALUE_SEPERATOR  = ','    ,
+        Colon       = ':',
+        Comma       = ',',
 
-        LEX_INVALID          = 0x00
+        Invalid     = 0x00
     };
 
     struct Lexer_t
     {
         Lexer_t();
 
-        Symbol cur_sym;
+        Symbols cur_sym;
         const char *cur_pos;
         const char *json_str;
 
@@ -67,10 +67,10 @@ namespace ddjson
 
         void load_string(const char *json_arg);
 
-        Symbol next();
-        Symbol get_sym();
+        Symbols next();
+        Symbols get_sym();
 
-        Symbol get_str(std::string &val);
-        Symbol get_num(const char * &val);
+        Symbols get_str(std::string &val);
+        Symbols get_num(const char * &val);
     };
 }

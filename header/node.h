@@ -77,15 +77,15 @@ namespace ddjson
       bool is_valid() const;
       int child_count() const;
 
+      operator int () const;
       operator bool () const;
+      operator char () const;
+      operator float () const;
+      operator string () const;
 
       Node_t & operator [] (const int idx) const;
       Node_t & operator [] (const char *name) const;
 
-      operator int () const;
-      operator char () const;
-      operator float () const;
-      operator string () const;
 
       Iterator_t back() const;
       Iterator_t front() const;

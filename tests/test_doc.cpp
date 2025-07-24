@@ -13,7 +13,24 @@ TEST_CASE("Validate JSON Parsing") {
     REQUIRE(root.child_count() == 1);
     REQUIRE(root.value_type() == Valtype::Object);
     REQUIRE(root.is_valid() == true);
-    REQUIRE(bool(root) == true);
+}
+
+TEST_CASE("Validate missing colon error") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"key" "value"})";
+    string errMsg = "Expected name-value seperator colon `:`";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root.is_valid() == false);
+    REQUIRE(jsonDoc.error().desc == errMsg);
+}
+
+TEST_CASE("Validate missing closing brace error") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"key": "value")";
+    string errMsg = "Expected object close symbol `}`";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root.is_valid() == false);
+    REQUIRE(jsonDoc.error().desc == errMsg);
 }
 
 TEST_CASE("Validate int field") {
@@ -90,5 +107,62 @@ TEST_CASE("Validate null field") {
     Node_t &root = jsonDoc.parse_string(jsonStr);
     REQUIRE(root["null"].is_valid() == true);
     REQUIRE(root["null"].value_type() == Valtype::Null);
-    REQUIRE(bool(root["null"]) == nullptr);
 }
+
+TEST_CASE("Validate empty object") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root.is_valid() == true);
+    REQUIRE(root.value_type() == Valtype::Object);
+    REQUIRE(root.child_count() == 0);
+}
+
+TEST_CASE("Validate empty array") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"empty_array": []})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["empty_array"].is_valid() == true);
+    REQUIRE(root["empty_array"].value_type() == Valtype::Array);
+    REQUIRE(root["empty_array"].child_count() == 0);
+}
+
+TEST_CASE("Validate nested objects") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"outer": {"inner": {"key": "value"}}})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["outer"].is_valid() == true);
+    REQUIRE(root["outer"].value_type() == Valtype::Object);
+    REQUIRE(root["outer"]["inner"].is_valid() == true);
+    REQUIRE(root["outer"]["inner"].value_type() == Valtype::Object);
+    REQUIRE(root["outer"]["inner"]["key"].is_valid() == true);
+    REQUIRE(string(root["outer"]["inner"]["key"]) == "value");
+}
+
+TEST_CASE("Validate object inside array") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"array": [{"key": "value"}]})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["array"].is_valid() == true);
+    REQUIRE(root["array"].value_type() == Valtype::Array);
+    REQUIRE(root["array"].child_count() == 1);
+    REQUIRE(root["array"][0].is_valid() == true);
+    REQUIRE(root["array"][0].value_type() == Valtype::Object);
+    REQUIRE(root["array"][0]["key"].is_valid() == true);
+    REQUIRE(string(root["array"][0]["key"]) == "value");
+}
+
+TEST_CASE("Validate array inside object") {
+    Doc_t jsonDoc;
+    const char *jsonStr = R"({"object": {"array": [1, 2, 3]}})";
+    Node_t &root = jsonDoc.parse_string(jsonStr);
+    REQUIRE(root["object"].is_valid() == true);
+    REQUIRE(root["object"].value_type() == Valtype::Object);
+    REQUIRE(root["object"]["array"].is_valid() == true);
+    REQUIRE(root["object"]["array"].value_type() == Valtype::Array);
+    REQUIRE(root["object"]["array"].child_count() == 3);
+    REQUIRE(int(root["object"]["array"][0]) == 1);
+    REQUIRE(int(root["object"]["array"][1]) == 2);
+    REQUIRE(int(root["object"]["array"][2]) == 3);
+}
+

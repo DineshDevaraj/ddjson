@@ -37,7 +37,7 @@ namespace ddjson
          Node_t * ParseRoot();
 
       private:
-         Node_t * ParseNode(Symbol node_close);
+         Node_t * ParseNode(Symbols node_close);
          Node_t * ParseNumbers();
          Node_t * ParseString();
          Node_t * ParseBool(bool val);

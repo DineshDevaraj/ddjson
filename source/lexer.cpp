@@ -16,57 +16,59 @@ Lexer_t::Lexer_t()
 void Lexer_t::load_string(const char *json_arg)
 {
    line_bgn = json_str = cur_pos = json_arg;
-   get_sym(); /* this will set cur_sym */
+   this->get_sym(); /* this will set cur_sym */
 }
 
-Symbol Lexer_t::next()
+Symbols Lexer_t::next()
 {
    cur_pos++;
-   return get_sym();
+   return this->get_sym();
 }
 
-Symbol Lexer_t::get_sym()
+Symbols Lexer_t::get_sym()
 {
    SKIP_WHITE_SPACE(cur_pos, line, line_bgn);
    char ch = *cur_pos;
    switch(ch)
    {
-      case LEX_NEG             :
-      case LEX_STRING          :
-      case LEX_ARRAY_OPEN      :
-      case LEX_ARRAY_CLOSE     :
-      case LEX_OBJECT_OPEN     :
-      case LEX_OBJECT_CLOSE    :
-      case LEX_NAME_SEPERATOR  :
-      case LEX_VALUE_SEPERATOR : cur_sym = Symbol(ch);
-                                 break;
+      case (char)Symbols::Neg:
+      case (char)Symbols::Colon:
+      case (char)Symbols::Comma: 
+      case (char)Symbols::ArrayOpen:
+      case (char)Symbols::ArrayClose:
+      case (char)Symbols::ObjectOpen:
+      case (char)Symbols::ObjectClose:
+      case (char)Symbols::DoubleQuote:
+         cur_sym = Symbols(ch);
+         break;
 
-      default  : if('0' <= ch and ch <= '9')
-                    cur_sym = LEX_INT;
-                 else if(0 == strncmp(cur_pos, "true", 4))
-                 {
-                    cur_sym  = LEX_BOOL_TRUE;
-                    cur_pos += 3;
-                 }
-                 else if(0 == strncmp(cur_pos, "false", 5))
-                 {
-                    cur_sym  = LEX_BOOL_FALSE;
-                    cur_pos += 4;
-                 }
-                 else if(0 == strncmp(cur_pos, "null", 4))
-                 {
-                    cur_sym  = LEX_NULL;
-                    cur_pos += 3;
-                 }
-                 else cur_sym = LEX_INVALID;
+      default: 
+         if('0' <= ch and ch <= '9') {
+            cur_sym = Symbols::Int;
+         }
+         else if(0 == strncmp(cur_pos, "true", 4)) {
+            cur_sym  = Symbols::True;
+            cur_pos += 3;
+         }
+         else if(0 == strncmp(cur_pos, "false", 5)) {
+            cur_sym  = Symbols::False;
+            cur_pos += 4;
+         }
+         else if(0 == strncmp(cur_pos, "null", 4)) {
+            cur_sym  = Symbols::Null;
+            cur_pos += 3;
+         }
+         else {
+            cur_sym = Symbols::Invalid;
+         }
    }
    return cur_sym;
 }
 
-Symbol Lexer_t::get_num(const char * &val)
+Symbols Lexer_t::get_num(const char * &val)
 {
    val = cur_pos;
-   Symbol sym = LEX_INT;
+   Symbols sym = Symbols::Int;
 
    if('-' == *cur_pos and !isdigit(*++cur_pos))
          throw_ddjex("Expected digit");
@@ -76,13 +78,13 @@ Symbol Lexer_t::get_num(const char * &val)
 
    if('.' == *cur_pos && isdigit(cur_pos[1]))
    {
-      sym = LEX_FLOAT;
+      sym = Symbols::Float;
       while(isdigit(*++cur_pos)); 
    }
 
    if('e' == *cur_pos || 'E' == *cur_pos)
    {
-      sym = LEX_FLOAT;
+      sym = Symbols::Float;
       if(isdigit(*++cur_pos))
          while(isdigit(*++cur_pos));
       else if('+' == *cur_pos || '-' == *cur_pos)
@@ -93,12 +95,12 @@ Symbol Lexer_t::get_num(const char * &val)
       }
    }
 
-   get_sym();
+   this->get_sym();
 
    return sym;
 }
 
-Symbol Lexer_t::get_str(std::string &val)
+Symbols Lexer_t::get_str(std::string &val)
 {
    cur_pos++;           /* skip string symbol */
    val.clear();
@@ -158,5 +160,5 @@ Symbol Lexer_t::get_str(std::string &val)
    
    val += arr;
 
-   return get_sym();
+   return this->get_sym();
 }
