@@ -9,6 +9,9 @@
 #include "header/node.hpp"
 
 namespace ddjson {
+
+using std::ostream;
+
 int Node_t::write(FILE *fh, const char *pad) {
   return Helper_t::write(fh, this, pad);
 }

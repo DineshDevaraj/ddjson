@@ -13,7 +13,11 @@
 
 namespace ddjson {
 
-#define oInvalid nullptr
+using std::cout;
+using std::ostream;
+using std::string;
+
+#define oInvalid (*static_cast<Node_t *>(0))
 
 /* different value types supported in JSON */
 struct Valtype {

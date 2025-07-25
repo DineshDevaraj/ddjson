@@ -1,7 +1,7 @@
 
 CXX := g++
 FLAGS := -g
-HEADER := -Iheader
+HEADER := -I.
 SRC := $(wildcard source/*.cpp)
 SRC += $(wildcard source/*/*.cpp)
 LIB := ./libs/libddjson.so

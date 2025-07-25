@@ -5,9 +5,11 @@
 
 #include "header/lexer.hpp"
 
+#include <cstring>
 #include <string>
 
-use ddjson::Lexer_t;
+using ddjson::Lexer_t;
+using ddjson::Symbols;
 
 Lexer_t::Lexer_t() {
   line = 1;
@@ -30,14 +32,14 @@ Symbols Lexer_t::get_sym() {
   SKIP_WHITE_SPACE(cur_pos, line, line_bgn);
   char ch = *cur_pos;
   switch (ch) {
-    case (static_cast<char>)Symbols::Neg:
-    case (static_cast<char>)Symbols::Colon:
-    case (static_cast<char>)Symbols::Comma:
-    case (static_cast<char>)Symbols::ArrayOpen:
-    case (static_cast<char>)Symbols::ArrayClose:
-    case (static_cast<char>)Symbols::ObjectOpen:
-    case (static_cast<char>)Symbols::ObjectClose:
-    case (static_cast<char>)Symbols::DoubleQuote:
+    case static_cast<char>(Symbols::Neg):
+    case static_cast<char>(Symbols::Colon):
+    case static_cast<char>(Symbols::Comma):
+    case static_cast<char>(Symbols::ArrayOpen):
+    case static_cast<char>(Symbols::ArrayClose):
+    case static_cast<char>(Symbols::ObjectOpen):
+    case static_cast<char>(Symbols::ObjectClose):
+    case static_cast<char>(Symbols::DoubleQuote):
       cur_sym = Symbols(ch);
       break;
 

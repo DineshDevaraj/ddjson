@@ -34,7 +34,7 @@ Node_t &Parser_t::root() { return *this->proot; }
  */
 string s2s(Symbols sym) {
   if (sym == Symbols::Invalid) return "null";
-  return string("") + (static_cast<char>)sym;
+  return string("") + static_cast<char>(sym);
 }
 
 Node_t *Parser_t::ParseNode(Symbols node_close) {

@@ -1,7 +1,7 @@
 
 CXX := g++
 FLAGS := -g
-INCLUDES := -Iheader
+INCLUDES := -I.
 LIBS := -lddjson -lCatch2Main -lCatch2
 SRC := $(wildcard tests/*.cpp)
 BIN := tests.bin
