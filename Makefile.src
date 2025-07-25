@@ -9,7 +9,7 @@ BIN := demo.bin
 
 all: $(LIB) $(BIN)
 
-$(LIB): $(SRC) header/*.h
+$(LIB): $(SRC) header/*.hpp
 	mkdir -p libs
 	$(CXX) $(FLAGS) $(HEADER) -fPIC -c $(SRC)
 	mv *.o libs

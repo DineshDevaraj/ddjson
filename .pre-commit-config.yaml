@@ -1,0 +1,9 @@
+repos:
+- repo: https://github.com/Lucas-C/pre-commit-hooks
+  rev: v1.5.5  # Use latest stable tag available
+  hooks:
+    - id: insert-license
+      args:
+        - --license-file=copyright.txt
+        - --comment-style=/* | * | */
+      files: \.(c|h|cpp|hpp)$
