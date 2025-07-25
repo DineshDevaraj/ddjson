@@ -1,12 +1,15 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "node.hpp"
+#include "header/node.hpp"
 
-#include "helper.hpp"
-#include "iterator.hpp"
+#include <cstdio>
+#include <iostream>
+
+#include "header/helper.hpp"
+#include "header/iterator.hpp"
 
 namespace ddjson {
 Node_t::Node_t() {

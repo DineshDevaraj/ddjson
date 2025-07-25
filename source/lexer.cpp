@@ -1,13 +1,13 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "lexer.hpp"
+#include "header/lexer.hpp"
 
-#include <cstring>
+#include <string>
 
-using namespace ddjson;
+use ddjson::Lexer_t;
 
 Lexer_t::Lexer_t() {
   line = 1;
@@ -30,14 +30,14 @@ Symbols Lexer_t::get_sym() {
   SKIP_WHITE_SPACE(cur_pos, line, line_bgn);
   char ch = *cur_pos;
   switch (ch) {
-    case (char)Symbols::Neg:
-    case (char)Symbols::Colon:
-    case (char)Symbols::Comma:
-    case (char)Symbols::ArrayOpen:
-    case (char)Symbols::ArrayClose:
-    case (char)Symbols::ObjectOpen:
-    case (char)Symbols::ObjectClose:
-    case (char)Symbols::DoubleQuote:
+    case (static_cast<char>)Symbols::Neg:
+    case (static_cast<char>)Symbols::Colon:
+    case (static_cast<char>)Symbols::Comma:
+    case (static_cast<char>)Symbols::ArrayOpen:
+    case (static_cast<char>)Symbols::ArrayClose:
+    case (static_cast<char>)Symbols::ObjectOpen:
+    case (static_cast<char>)Symbols::ObjectClose:
+    case (static_cast<char>)Symbols::DoubleQuote:
       cur_sym = Symbols(ch);
       break;
 
@@ -70,16 +70,19 @@ Symbols Lexer_t::get_num(const char *&val) {
 
   if ('.' == *cur_pos && isdigit(cur_pos[1])) {
     sym = Symbols::Float;
-    while (isdigit(*++cur_pos));
+    while (isdigit(*++cur_pos)) {
+    }
   }
 
   if ('e' == *cur_pos || 'E' == *cur_pos) {
     sym = Symbols::Float;
-    if (isdigit(*++cur_pos))
-      while (isdigit(*++cur_pos));
-    else if ('+' == *cur_pos || '-' == *cur_pos) {
+    if (isdigit(*++cur_pos)) {
+      while (isdigit(*++cur_pos)) {
+      }
+    } else if ('+' == *cur_pos || '-' == *cur_pos) {
       if (not isdigit(*++cur_pos)) throw_ddjex("Expected digit");
-      while (isdigit(*++cur_pos));
+      while (isdigit(*++cur_pos)) {
+      }
     }
   }
 

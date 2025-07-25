@@ -1,17 +1,19 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "doc.hpp"
+#include "header/doc.hpp"
 
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
-#include "helper.hpp"
-#include "node.hpp"
-#include "parser.hpp"
+#include <cstdio>
+
+#include "header/helper.hpp"
+#include "header/node.hpp"
+#include "header/parser.hpp"
 
 namespace ddjson {
 Node_t &Doc_t::root() { return this->pparser->root(); }

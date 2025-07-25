@@ -1,16 +1,16 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
 #pragma once
 
-#include "forward_declarations.hpp"
+#include "header/forward_declarations.hpp"
 
 namespace ddjson {
 struct Iterator_t {
   Iterator_t();
-  Iterator_t(Node_t *node);
+  explicit Iterator_t(Node_t *node);
 
   operator bool();
   Node_t &operator*();

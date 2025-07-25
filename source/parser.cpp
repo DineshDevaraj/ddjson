@@ -1,11 +1,13 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "parser.hpp"
+#include "header/parser.hpp"
 
-#include "helper.hpp"
+#include <string>
+
+#include "header/helper.hpp"
 
 namespace ddjson {
 Parser_t::Parser_t(const char *json_str) { this->lex.load_string(json_str); }
@@ -32,7 +34,7 @@ Node_t &Parser_t::root() { return *this->proot; }
  */
 string s2s(Symbols sym) {
   if (sym == Symbols::Invalid) return "null";
-  return string("") + (char)sym;
+  return string("") + (static_cast<char>)sym;
 }
 
 Node_t *Parser_t::ParseNode(Symbols node_close) {

@@ -1,12 +1,14 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
 #pragma once
 
-#include "node.hpp"
-#include "parser.hpp"
+#include <cstdio>
+
+#include "header/node.hpp"
+#include "header/parser.hpp"
 
 namespace ddjson {
 struct Doc_t {

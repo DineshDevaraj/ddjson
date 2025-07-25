@@ -1,15 +1,15 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
 #pragma once
 
-#include <iostream>
+#include <string>
 
-#include "error.hpp"
-#include "lexer.hpp"
-#include "node.hpp"
+#include "header/error.hpp"
+#include "header/lexer.hpp"
+#include "header/node.hpp"
 
 namespace ddjson {
 #define OK true

@@ -1,13 +1,14 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "helper.hpp"
+#include "header/helper.hpp"
 
 #include <cstdarg>
 #include <cstdio>
 #include <ostream>
+#include <string>
 
 namespace ddjson {
 template int Helper_t::write<FILE>(FILE *&ptr, Node_t *pn, const char *pad,
@@ -23,7 +24,8 @@ Node_t *Helper_t::free_node(Node_t *pnode) {
   Node_t *next = pnode->vobj;
 
   if (Valtype::Array == pnode->vtype or Valtype::Object == pnode->vtype)
-    while (next = Helper_t::free_node(next));
+    while (next = Helper_t::free_node(next)) {
+    }
 
   next = pnode->pnext;
   delete pnode;
@@ -34,7 +36,9 @@ template <>
 int Helper_t::print(FILE *&fh, const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  return vfprintf(fh, fmt, args);
+  int len = vfprintf(fh, fmt, args);
+  va_end(args);
+  return len;
 }
 
 template <>
@@ -42,6 +46,7 @@ int Helper_t::print(char *&cp, const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
   int len = vsprintf(cp, fmt, args);
+  va_end(args);
   cp += len;
   return len;
 }
@@ -57,6 +62,7 @@ int Helper_t::print(ostream *&os, const char *fmt, ...) {
     vsprintf(&str[0], fmt, args);
     (*os) << str;
   }
+  va_end(args);
   return len;
 }
 
@@ -65,8 +71,9 @@ int Helper_t::write(tn *&dst, Node_t *pnode, const char *pad, int lev) {
   int len = 0;
   Node_t *itr = NULL;
 
-  if (pad)
+  if (pad) {
     for (int I = 0; I < lev; I++) len += print(dst, "%s", pad);
+  }
 
   if (not pnode->name.empty()) {
     len += print(dst, "\"%s\"", pnode->name.data());
@@ -103,8 +110,9 @@ int Helper_t::write(tn *&dst, Node_t *pnode, const char *pad, int lev) {
           if (itr) len += print(dst, ",");
           if (pad) len += print(dst, "\n");
         }
-        if (pad)
+        if (pad) {
           for (int I = 0; I < lev; I++) len += print(dst, "%s", pad);
+        }
       }
       len += print(dst, "]");
       break;
@@ -119,8 +127,9 @@ int Helper_t::write(tn *&dst, Node_t *pnode, const char *pad, int lev) {
           if (itr) len += print(dst, ",");
           if (pad) len += print(dst, "\n");
         }
-        if (pad)
+        if (pad) {
           for (int I = 0; I < lev; I++) len += print(dst, "%s", pad);
+        }
       }
       len += print(dst, "}");
       break;

@@ -1,16 +1,18 @@
 
-/* 
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
+ */
+
+/*
  *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
  */
 
 #include <cstdio>
 #include <iostream>
+#include <string>
 
-#include "ddjson.hpp"
-#include "error.hpp"
-
-using namespace std;
-using namespace ddjson;
+#include "header/ddjson.hpp"
+#include "header/error.hpp"
 
 void PrintJson(Node_t &node) {
   Iterator_t itr = node.front();
@@ -18,13 +20,13 @@ void PrintJson(Node_t &node) {
     fprintf(stderr, "%s : ", ref.name.data());
     switch (ref.value_type()) {
       case Valtype::Int:
-        cerr << (int)ref << endl;
+        cerr << (static_cast<int>)ref << endl;
         break;
       case Valtype::Float:
-        cerr << (float)ref << endl;
+        cerr << (static_cast<float>)ref << endl;
         break;
       case Valtype::String:
-        cerr << (string)ref << endl;
+        cerr << (static_cast<string>)ref << endl;
         break;
       case Valtype::Array:
       case Valtype::Object:
@@ -48,7 +50,7 @@ int main(int argc, char *argv[]) {
   int start = atoi(argv[1]);
   int end = atoi(argv[2]);
   for (int I = start; I < end; I++) {
-    sprintf(file, "samples/sample%d.json", I);
+    snprintf(file, sizeof(file), "samples/sample%d.json", I);
     FILE *fh = fopen(file, "r");
     if (NULL == fh) {
       printf("Unable to open file %s\n", file);

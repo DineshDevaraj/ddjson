@@ -1,9 +1,11 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "node.hpp"
+#include <string>
+
+#include "header/node.hpp"
 
 namespace ddjson {
 Node_t::operator int() const { return this->vint; }

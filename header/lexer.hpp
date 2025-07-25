@@ -1,14 +1,13 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
 #pragma once
 
-#include <iostream>
+#include <string>
 
 namespace ddjson {
-using namespace std;
 
 #define SKIP_WHITE_SPACE(str, line, line_bgn) \
   ({                                          \

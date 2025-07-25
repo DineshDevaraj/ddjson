@@ -1,10 +1,10 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "iterator.hpp"
-#include "node.hpp"
+#include "header/iterator.hpp"
+#include "header/node.hpp"
 
 namespace ddjson {
 Node_t& Node_t::root() const { return *this->proot; }

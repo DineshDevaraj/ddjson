@@ -1,11 +1,11 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
 #pragma once
 
-#include "node.hpp"
+#include "header/node.hpp"
 
 namespace ddjson {
 struct Helper_t {

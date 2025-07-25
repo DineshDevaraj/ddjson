@@ -1,11 +1,13 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "iterator.hpp"
+#include "header/iterator.hpp"
 
-#include "node.hpp"
+#include <string>
+
+#include "header/node.hpp"
 
 namespace ddjson {
 Iterator_t::Iterator_t() {}

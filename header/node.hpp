@@ -1,18 +1,19 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
 #pragma once
 
+#include <cstdio>
 #include <iostream>
+#include <string>
 
-#include "forward_declarations.hpp"
+#include "header/forward_declarations.hpp"
 
 namespace ddjson {
-using namespace std;
 
-#define oInvalid (*((Node_t *)0))
+#define oInvalid nullptr
 
 /* different value types supported in JSON */
 struct Valtype {
@@ -60,7 +61,7 @@ struct Node_t : private MembersMixin_t {
   string name;
 
   Node_t();
-  Node_t(Valtype_t type);
+  explicit Node_t(Valtype_t type);
 
   Node_t &root() const;
 

@@ -1,13 +1,13 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
 #pragma once
 
-#include "doc.hpp"
-#include "helper.hpp"
-#include "iterator.hpp"
-#include "lexer.hpp"
-#include "node.hpp"
-#include "parser.hpp"
+#include "header/doc.hpp"
+#include "header/helper.hpp"
+#include "header/iterator.hpp"
+#include "header/lexer.hpp"
+#include "header/node.hpp"
+#include "header/parser.hpp"

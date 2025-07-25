@@ -1,10 +1,12 @@
 
-/* 
- *  ⓒ 2025 Dinesh Devaraj - All Rights Reserved
+/*
+ *  Copyright [2025] <Dinesh Devaraj>
  */
 
-#include "helper.hpp"
-#include "node.hpp"
+#include <cstdio>
+
+#include "header/helper.hpp"
+#include "header/node.hpp"
 
 namespace ddjson {
 int Node_t::write(FILE *fh, const char *pad) {
